@@ -3,7 +3,12 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  userId: 123362174,
+  twitchClientSecret: 'fnned9wqvh4ha1fpvgfwz7p5o74yu9',
+  twitchClientId: '191kjk5d0186wwc0fnd5jxwvzqinwf',
+  redirectUrl: 'http://localhost:4200/redirected',
+  accessToken: 'kv8rligig8tt0r6td03nasvzjsj8u6',
 };
 
 /*

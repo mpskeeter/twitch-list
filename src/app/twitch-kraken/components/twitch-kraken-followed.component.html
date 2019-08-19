@@ -1,0 +1,12 @@
+<!-- <ng-container *ngIf="service.follows$ | async as follows else loading"> -->
+<ng-container *ngIf="service.userFollows$ | async as userFollows else loading">
+  {{ userFollows | json}}
+  <twitch-kraken-followed-stream [follows]="userFollows.follows"></twitch-kraken-followed-stream>
+  <!-- <ng-container *ngFor="let follow of userFollows.follows">
+      <twitch-kraken-stream [channel]="follow.channel"></twitch-kraken-stream>
+  </ng-container> -->
+</ng-container>
+
+<ng-template #loading>
+  Loading...
+</ng-template>

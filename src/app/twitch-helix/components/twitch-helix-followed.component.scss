@@ -1,0 +1,17 @@
+:host {
+  .channel_banner {
+    display:flex;
+    max-width: 600px;
+    color:white;
+    background-color:rgba(0,0,0,0.8);
+    border-radius: 5px;
+    padding-bottom: 15px;
+    justify-content: flex-start;
+  }
+
+  .channel_logo{
+    align-self: center;
+    width: 80px;
+    height: 80px;
+  }
+}

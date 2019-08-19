@@ -1,0 +1,8 @@
+<!-- <ng-container *ngIf="service.follows$ | async as follows else loading"> -->
+<ng-container *ngIf="service.follows$ | async as follows else loading">
+  <twitch-helix-followed-get-users [userIds]="parseUserIds(follows.data)"></twitch-helix-followed-get-users>
+</ng-container>
+
+<ng-template #loading>
+  Loading...
+</ng-template>

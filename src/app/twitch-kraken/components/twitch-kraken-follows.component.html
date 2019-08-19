@@ -1,0 +1,11 @@
+<ng-container *ngIf="service.follows$ | async as follows else loading">
+  <ul>
+    <li *ngFor="let followed of follows.data">{{followed.to_name}}</li>
+  </ul>
+  <!-- <twitch-followed-stream [follows]="follows.data"></twitch-followed-stream> -->
+  <twitch-kraken-followed-stream></twitch-kraken-followed-stream>
+</ng-container>
+
+<ng-template #loading>
+  Loading...
+</ng-template>

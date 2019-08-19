@@ -1,0 +1,11 @@
+<ng-container *ngIf="service.users$ | async as users else loading">
+  <!-- <ul>
+    <li *ngFor="let followed of follows.data">{{followed.to_name}}</li>
+  </ul> -->
+  <!-- <twitch-helix-followed-stream [follows]="follows.data"></twitch-helix-followed-stream> -->
+  <twitch-helix-followed-merge-live [users]="users.data"></twitch-helix-followed-merge-live>
+</ng-container>
+
+<ng-template #loading>
+  Loading...
+</ng-template>

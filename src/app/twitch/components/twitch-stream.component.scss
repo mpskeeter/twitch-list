@@ -1,0 +1,34 @@
+:host {
+  .channel_banner {
+    display:flex;
+    max-width: 600px;
+    color:white;
+    background-color:rgba(0,0,0,0.8);
+    border-radius: 5px;
+    padding-bottom: 15px;
+    justify-content: flex-start;
+  }
+
+  .channel_logo{
+    align-self: center;
+    width: 80px;
+    height: 80px;
+  }
+
+  .online{
+    box-shadow: forestgreen  -6px -5px 5px !important;
+
+    margin: 40px auto;
+    background-color: rgba(20,20,20,0.6);
+    max-width: 700px;
+    box-shadow: rgba(255,255,255,0.4) -8px -6px 5px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+
+  }
+
+  .offline{
+    box-shadow: red -6px -5px 5px;
+  }
+}
