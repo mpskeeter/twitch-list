@@ -1,53 +1,63 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { TwitchHelixApiService } from '../services';
 import { map } from 'rxjs/operators';
-import { TwitchUsersFollows, TwitchUsersFollowsData, TwitchStream } from '../models';
+import { TwitchUsersFollowsData, TwitchStream, TwitchUser } from '../models';
+import { Router } from '@angular/router';
+import { combineLatest } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'twitch-helix-followed-stream',
   templateUrl: 'twitch-helix-followed-stream.component.html',
+  styleUrls: ['twitch-helix-followed-stream.component.scss']
 })
 export class TwitchHelixFollowedStreamComponent implements OnInit {
-  @Input() follows: TwitchUsersFollows;
+  @Input() following: TwitchUsersFollowsData[];
 
   streams: any;
+  users: TwitchUser[];
 
-  constructor(
-    public service: TwitchHelixApiService,
-  ) { }
+  constructor(public service: TwitchHelixApiService, public router: Router) {}
 
   async ngOnInit() {
-    const userIds: string[] = this.follows.data.map((followed: TwitchUsersFollowsData) => followed.to_id.toString());
+    const userIds: string[] = this.following.map(
+      (followed: TwitchUsersFollowsData) => followed.to_id
+    );
 
+    // users
+    await this.service.getUsers({ param: 'id', value: userIds });
+    // followedStream
     await this.service.getStreams({ param: 'user_id', value: userIds });
 
-    this.service.followedStream$
+    combineLatest([this.service.users$, this.service.followedStream$])
       .pipe(
-        map(streams => {
-          if (this.follows !== null && streams !== null) {
-            return this.follows.data.map(follow => {
-              const newStream: TwitchStream = {
-                id: null,
-                user_id: follow.to_id,
-                user_name: follow.to_name,
-                game_id: null,
-                community_ids: [null],
-                type: '',
-                title: null,
-                viewer_count: 0,
-                started_at: null,
-                language: null,
-                thumbnail_url: null,
-                tag_ids: [null],
-              };
-              const streamActive = streams.data.find(stream => stream.user_id === follow.to_id);
-
-              return (streamActive ? streamActive : newStream);
+        map(([users, streams]) => {
+          if (users && streams) {
+            return users.data.map(user => {
+              user.stream = streams.data.find(
+                stream => stream.user_id === user.id
+              );
+              return user;
             });
           }
-        }),
+        })
       )
-      .subscribe(data => this.streams = data);
+      .subscribe(users => (this.users = users));
+  }
+
+  isOnline = (users: TwitchUser[], online: boolean) => {
+    return users.filter(
+      (user: TwitchUser) =>
+        (online && user.stream) || (!online && user.stream === undefined)
+    );
+  }
+
+  // isOnline = (streams: TwitchStream[] , online: boolean) => {
+  //   return streams.filter((stream: TwitchStream) => stream.type === (online ? 'live' : ''));
+  // }
+
+  viewStream = (userName: string) => {
+    // console.log('userName: ', userName);
+    this.router.navigate(['/twitch', 'viewstream', userName]);
   }
 }

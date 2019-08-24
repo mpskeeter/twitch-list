@@ -13,20 +13,22 @@ import { MaterialModule } from './material.module';
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
     // [...RouteComponents],
   ],
   imports: [
-    RouterModule.forRoot(Routes),
+    // RouterModule.forRoot(Routes),
     BrowserModule,
     BrowserAnimationsModule,
     FlexLayoutModule,
     MaterialModule,
     TwitchHelixModule,
     // TwitchKrakenModule,
-    AppRoutingModule,
+
+    // Keep routin module loaded last
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

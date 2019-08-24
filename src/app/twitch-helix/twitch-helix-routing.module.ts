@@ -1,22 +1,30 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Route } from '@angular/router';
 
-import { TwitchHelixFollowedComponent, TwitchHelixFollowedStreamComponent } from './components';
+import {
+  TwitchHelixFollowedComponent,
+  TwitchHelixFollowedStreamComponent,
+  TwitchHelixViewStreamComponent
+} from './components';
 
-const twitchRoutes: Routes = [
-  { path: 'twitch',  component: TwitchHelixFollowedComponent,
-    children: [
-      { path: 'streams',  component: TwitchHelixFollowedStreamComponent },
-    ]
-  },
+export const twitchRoutes: Route[] = [
+  { path: '', component: TwitchHelixFollowedComponent },
+  { path: 'viewstream/:id', component: TwitchHelixViewStreamComponent }
 ];
 
+// export const twitchRoutes: Route[] = [
+//   { path: '',  component: TwitchHelixFollowedComponent,
+//     children: [
+//       {
+//         path: 'viewstream/:id',
+//         component: TwitchHelixViewStreamComponent,
+//       },
+//     ],
+//   },
+// ];
+
 @NgModule({
-  imports: [
-    RouterModule.forChild(twitchRoutes)
-  ],
-  exports: [
-    RouterModule
-  ]
+  imports: [RouterModule.forChild(twitchRoutes)],
+  exports: [RouterModule]
 })
-export class TwitchHelixRoutingModule { }
+export class TwitchHelixRoutingModule {}

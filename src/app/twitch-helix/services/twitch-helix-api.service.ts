@@ -6,13 +6,18 @@ import { map, tap } from 'rxjs/operators';
 import {
   TwitchAppToken,
   TwitchUsersFollows,
-  TwitchUser,
   TwitchStreams,
-  TwitchUsers
+  TwitchUsers,
+  TwitchSubscriptionError,
+  TwitchSubscriptionSuccess
 } from '../models';
 
 import { environment } from '../../../environments/environment';
-import { isString, isArray } from 'util';
+
+interface Parameters {
+  param: string;
+  value: string[] | string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -30,29 +35,78 @@ export class TwitchHelixApiService {
   private followedStream = new BehaviorSubject<TwitchStreams>(null);
   followedStream$ = this.followedStream.asObservable();
 
+  private subscribed = new BehaviorSubject<
+    TwitchSubscriptionError | TwitchSubscriptionSuccess
+  >(null);
+  subscribed$ = this.subscribed.asObservable();
+
+  private baseUrl = 'https://api.twitch.tv/';
   private headers: HttpHeaders;
 
-  constructor(
-    private http: HttpClient,
-  ) {
+  constructor(private http: HttpClient) {
+    this.initializeHeaders();
+  }
+
+  initializeHeaders = (apiVersion: string = 'helix') => {
     this.headers = new HttpHeaders().set('Content-Type', 'application/json');
     this.headers = this.headers.append('Client-ID', environment.twitchClientId);
-    if (environment.accessToken) {
-      this.headers = this.headers.append('Authorization', `Bearer ${environment.accessToken}`);
+    switch (apiVersion) {
+      case 'helix':
+        if (environment.accessToken) {
+          this.headers = this.headers.append(
+            'Authorization',
+            `Bearer ${environment.accessToken}`
+          );
+        }
+        break;
+      case 'kraken':
+        this.headers = this.headers.append(
+          'Accept',
+          'application/vnd.twitchtv.v5+json'
+        );
+        if (environment.authToken) {
+          this.headers = this.headers.append(
+            'Authorization',
+            `OAuth ${environment.authToken}`
+          );
+        }
+        this.headers = this.headers.append('dataType', 'jsonp');
+        break;
     }
   }
 
   BuildAPIParams = (params: any[]): string => {
-    return '?' +
-      params.map(param => {
-        if (!param) {
-          return '';
-        } else if (isString(param.value)) {
-          return `${param.param}=${param.value}`;
-        } else if (isArray(param.value)) {
-          return param.value.map(value => `${param.param}=${value}`).join('&');
-        }
-      }).join('&');
+    return (
+      '?' +
+      params
+        .map(param => {
+          if (!param) {
+            return '';
+          } else if (typeof param.value === 'string') {
+            return `${param.param}=${param.value}`;
+          } else if (Array.isArray(param.value)) {
+            return param.value
+              .map(value => `${param.param}=${value}`)
+              .join('&');
+          }
+        })
+        .join('&')
+    );
+  }
+
+  buildFullBaseUrl = (url: string, apiVersion: string = 'helix') => {
+    this.initializeHeaders(apiVersion);
+    return `${this.baseUrl}${apiVersion}${url}`;
+  }
+
+  buildUrl = (
+    url: string,
+    params: any[] = [],
+    apiVersion: string = 'helix'
+  ) => {
+    return `${this.buildFullBaseUrl(url, apiVersion)}${this.BuildAPIParams(
+      params
+    )}`;
   }
 
   getFollowsPagination = () => {
@@ -72,29 +126,27 @@ export class TwitchHelixApiService {
   }
 
   getUser = () => {
+    const url = '/users';
     const params = [
       { param: 'login', value: ['mpskeeter', 'mrbrandotv'] },
-      { param: 'scope', value: 'user:read:email' },
+      { param: 'scope', value: 'user:read:email' }
     ];
 
-    // let headers = this.headers.append('Client-ID', environment.twitchClientId);
-    // headers = headers.append('Authorization', `Bearer ${environment.accessToken}`);
+    const apiUrl = this.buildUrl(url, params);
 
-    // console.log('getUser: headers: ', headers);
-
-    this.http.get<any>(`https://api.twitch.tv/helix/users${this.BuildAPIParams(params)}`, { headers: this.headers })
-      .subscribe(
-        data => {
-          // console.log('getUser: data: ', data.data);
-          this.users.next(data.data);
-        },
-        // err => this.snacker.sendErrorMessage(err.error)
-        err => console.log('getUser: error: ', err),
-      );
+    // this.http.get<any>(`https://api.twitch.tv/helix/users${this.BuildAPIParams(params)}`, { headers: this.headers })
+    this.http.get<any>(apiUrl, { headers: this.headers }).subscribe(
+      data => {
+        // console.log('getUser: data: ', data.data);
+        this.users.next(data.data);
+      },
+      // err => this.snacker.sendErrorMessage(err.error)
+      err => console.log('getUser: error: ', err)
+    );
   }
 
   acquireAppToken = (): Promise<boolean> =>
-    new Promise((resolve) => {
+    new Promise(resolve => {
       const params = [
         { param: 'client_id', value: environment.twitchClientId },
         { param: 'client_secret', value: environment.twitchClientSecret },
@@ -103,7 +155,13 @@ export class TwitchHelixApiService {
         { param: 'user', value: 'mpskeeter' }
       ];
 
-      this.http.post(`https://cors-anywhere.herokuapp.com/https://id.twitch.tv/oauth2/token${this.BuildAPIParams(params)}`, null)
+      this.http
+        .post(
+          `https://cors-anywhere.herokuapp.com/https://id.twitch.tv/oauth2/token${this.BuildAPIParams(
+            params
+          )}`,
+          null
+        )
         .subscribe(
           (data: TwitchAppToken) => {
             // console.log('acquireAppToken: data: ', data);
@@ -119,53 +177,80 @@ export class TwitchHelixApiService {
         );
     })
 
-  getStreams = (inputParams?: {param: string, value: string[]}) => {
+  getStreams = (inputParams: Parameters | Parameters[]) => {
+    const url = '/streams';
 
-    console.log('inputParams: ', inputParams);
-    // let userIds: string[];
-    // this.follows$
-    //   .pipe(
-    //     // tap(follows => follows.data.map(follow => console.log('tap: follow: ', follow))),
-    //     map(follows => follows.data.map(follow => follow.to_id.toString()))
-    //   )
-    //   .subscribe(data => userIds = data);
+    if (!Array.isArray(inputParams)) {
+      inputParams = [inputParams];
+    }
 
-    const params = [
-      // { param: 'user_id', value: userIds },
-      { param: 'limit', value: '100' },
-      inputParams,
-    ];
-    this.headers = this.headers.append('Accept', 'application/vnd.twitchtv.v5+json');
+    inputParams.push({ param: 'limit', value: '100' });
 
-    this.http.get<TwitchStreams>(`https://api.twitch.tv/helix/streams${this.BuildAPIParams(params)}`, { headers: this.headers })
-      .subscribe(
-        data => {
-          this.followedStream.next(data);
-        },
-        err => console.log('getFollowedStreams: error: ', err),
-      );
+    const apiUrl = this.buildUrl(url, inputParams);
+    // this.headers = this.headers.append('Accept', 'application/vnd.twitchtv.v5+json');
+
+    this.http.get<TwitchStreams>(apiUrl, { headers: this.headers }).subscribe(
+      data => {
+        this.followedStream.next(data);
+      },
+      err => console.log('getFollowedStreams: error: ', err)
+    );
   }
 
-  getUsers = (id: string[]) => {
-    const params = [
-      { param: 'id', value: id },
-    ];
+  getUsers = (params: Parameters | Parameters[]) => {
+    const url = '/users';
 
-    this.http.get<TwitchUsers>(`https://api.twitch.tv/helix/users${this.BuildAPIParams(params)}`, { headers: this.headers })
+    if (!Array.isArray(params)) {
+      params = [params];
+    }
+    const apiUrl = this.buildUrl(url, params);
+
+    this.http.get<TwitchUsers>(apiUrl, { headers: this.headers }).subscribe(
+      (data: TwitchUsers) => {
+        // console.log('getUsers: data: ', data);
+        this.users.next(data);
+      },
+      // err => this.snacker.sendErrorMessage(err.error)
+      err => console.log('getUser: error: ', err)
+    );
+  }
+
+  getSubscription = (channelId: string) => {
+    this.initializeHeaders();
+
+    const url = `/users/${environment.userId}/subscriptions/${channelId}`;
+
+    const apiUrl = this.buildFullBaseUrl(url, 'kraken');
+    // this.headers = this.headers.append('Accept', 'application/vnd.twitchtv.v5+json');
+
+    // console.log('headers: ', this.headers);
+
+    this.http
+      .get<TwitchSubscriptionError | TwitchSubscriptionSuccess>(
+        // (`https://cors-anywhere.herokuapp.com/${apiUrl}`, { headers: this.headers })
+        apiUrl,
+        { headers: this.headers }
+      )
       .subscribe(
         data => {
-          // console.log('getUser: data: ', data);
-          this.users.next(data);
+          console.log('getSubscription: data: ', data);
+          // if (data instanceof TwitchSubscriptionSuccess) {
+          //   this.subscription.next(data);
+          // }
+          this.subscribed.next(data);
         },
+        err => {}
         // err => this.snacker.sendErrorMessage(err.error)
-        err => console.log('getUser: error: ', err),
+        // err => console.log('getSubscription: error: ', err),
       );
   }
+
+  // https://api.twitch.tv/kraken/users/<user ID>/subscriptions/<channel ID>
 
   getUsersFollowsInitial = () => {
     const params = [
       { param: 'from_id', value: environment.userId.toString() },
-      { param: 'first', value: '100' },
+      { param: 'first', value: '100' }
     ];
 
     this.getUsersFollows(params);
@@ -175,20 +260,23 @@ export class TwitchHelixApiService {
     const params = [
       { param: 'from_id', value: environment.userId.toString() },
       { param: 'first', value: '20' },
-      { param: 'after', value: this.getFollowsPagination() },
+      { param: 'after', value: this.getFollowsPagination() }
     ];
 
     this.getUsersFollows(params);
   }
 
-  getUsersFollows = (params) => {
-    this.http.get<TwitchUsersFollows>(`https://api.twitch.tv/helix/users/follows${this.BuildAPIParams(params)}`, { headers: this.headers })
+  getUsersFollows = params => {
+    const url = '/users/follows';
+    const apiUrl = this.buildUrl(url, params);
+    this.http
+      .get<TwitchUsersFollows>(apiUrl, { headers: this.headers })
       .subscribe(
         data => {
           this.follows.next(data);
         },
         // err => this.snacker.sendErrorMessage(err.error)
-        err => console.log('getFollowers: error: ', err),
+        err => console.log('getFollowers: error: ', err)
       );
   }
 
@@ -196,9 +284,12 @@ export class TwitchHelixApiService {
     const params = [
       { param: 'client_id', value: environment.twitchClientId },
       { param: 'response_type', value: 'token' },
-      { param: 'scope', value: 'user:read:email+analytics:read:extensions+viewing_activity_read' },
+      {
+        param: 'scope',
+        value: 'user:read:email+analytics:read:extensions+viewing_activity_read'
+      },
       { param: 'state', value: 'ii99ii99ii99' },
-      { param: 'redirect_uri', value: environment.redirectUrl },
+      { param: 'redirect_uri', value: environment.redirectUrl }
     ];
 
     // "Origin: http://127.0.0.1:3000" \
@@ -210,7 +301,6 @@ export class TwitchHelixApiService {
 
     // this.headers = this.headers.append('Client-ID', environment.twitchClientId);
     // this.headers = this.headers.append('accept', 'application/vnd.twitchtv.v5+json');
-
 
     // response.setHeader("Access-Control-Allow-Origin", "*");
     // response.setHeader("Access-Control-Allow-Credentials", "true");
@@ -231,14 +321,18 @@ export class TwitchHelixApiService {
 
     console.log('getAuthorize: headers: ', this.headers);
 
-    this.http.get<any>(`https://id.twitch.tv/oauth2/authorize${this.BuildAPIParams(params)}`, { headers: this.headers })
+    this.http
+      .get<any>(
+        `https://id.twitch.tv/oauth2/authorize${this.BuildAPIParams(params)}`,
+        { headers: this.headers }
+      )
       .subscribe(
         data => {
           console.log('authorize: data: ', data);
           // this.response.next(data);
         },
         // err => this.snacker.sendErrorMessage(err.error)
-        err => console.log('authorize: error: ', err),
+        err => console.log('authorize: error: ', err)
       );
   }
 }

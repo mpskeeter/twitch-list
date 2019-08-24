@@ -1,9 +1,0 @@
-<ng-container *ngIf="streams else loading">
-  <twitch-helix-stream *ngFor="let stream of streams"
-                       [stream]="stream"></twitch-helix-stream>
-</ng-container>
-
-
-<ng-template #loading>
-  Loading...
-</ng-template>

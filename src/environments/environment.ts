@@ -8,7 +8,8 @@ export const environment = {
   twitchClientSecret: 'fnned9wqvh4ha1fpvgfwz7p5o74yu9',
   twitchClientId: '191kjk5d0186wwc0fnd5jxwvzqinwf',
   redirectUrl: 'http://localhost:4200/redirected',
-  accessToken: 'kv8rligig8tt0r6td03nasvzjsj8u6',
+  accessToken: 'u23jq1g8ei0nuool9qq5mtpoqw3faa',
+  authToken: 'q2skb2dpe9carn89wxelyb9sdcdkam'
 };
 
 /*

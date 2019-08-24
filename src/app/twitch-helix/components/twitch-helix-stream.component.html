@@ -1,24 +1,21 @@
-<ng-container>
+<mat-card [ngClass]="online" gdAreas="header | content | footer">
+  <mat-card-header gdArea="header">
+    <img
+      mat-card-avatar
+      *ngIf="user.profile_image_url"
+      src="{{ user.profile_image_url }}"
+    />
 
-  <!-- {{ stream | json }} -->
-  <!-- [ngStyle]="{background: 'url(/img/' + item.img + ')', width: '200px', height: '150px'" -->
-  <mat-card>
-      <mat-card-title-group>
-          <mat-card-title>{{stream.user_name}}</mat-card-title>
-          <img mat-card-sm-image src="{{stream.thumbnail_url | replace:'{width}':'70' | replace:'{height}':'70'}}"/>
-      </mat-card-title-group>
-  </mat-card>
-  <div class="jumbotron channel_banner"
-       [ngClass]="stream.type==='live' ? 'online' : 'offline'"
-       style="height: 100px;">
-    <div *ngIf="stream.thumbnail_url" class="channel_logo">
-      <img src="{{stream.thumbnail_url | replace:'{width}':'70' | replace:'{height}':'70'}}"/>
-    </div>
-    <div class="channel-name">{{stream.user_name}}</div>
-  </div>
+    <mat-card-title-group>
+      <mat-card-title>{{ user.display_name }}</mat-card-title>
+      <mat-card-subtitle>{{
+        user.stream && user.stream.title
+      }}</mat-card-subtitle>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content gdArea="content">
+    <div id="{{ user.stream.id }}"></div>
 
-  <!-- channel_banner.attr('id', id);
-  channel_banner.attr('name', name);
-  $('#'+id).css('background-image', 'url("'+banner+'")'); -->
-
-</ng-container>
+    <script-hack>{{ loadVideo() }}</script-hack>
+  </mat-card-content>
+</mat-card>

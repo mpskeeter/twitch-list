@@ -1,0 +1,44 @@
+<ng-container *ngIf="service.subscribed$ | async as subscribed">
+  <!-- <pre>{{subscribed | json}}</pre> -->
+  <mat-card
+    [ngClass]="
+      user.stream && user.stream.type === 'live' ? 'online' : 'offline'
+    "
+    gdAreas="header | content | footer"
+  >
+    <mat-card-header gdArea="header">
+      <img
+        mat-card-avatar
+        *ngIf="user.profile_image_url"
+        src="{{ user.profile_image_url }}"
+      />
+      <mat-card-title-group>
+        <mat-card-title>
+          <!-- {{user.display_name}} ({{user.id}}) -->
+          {{ user.display_name }}
+          <i class="material-icons yellow-icon" *ngIf="isSubscribed()">star</i>
+        </mat-card-title>
+        <mat-card-subtitle>{{
+          user.stream && user.stream.title
+        }}</mat-card-subtitle>
+      </mat-card-title-group>
+    </mat-card-header>
+    <mat-card-content gdArea="content"></mat-card-content>
+    <mat-card-actions gdArea="footer">
+      <button
+        mat-button
+        [disabled]="
+          !user.stream || (user.stream && user.stream.type !== 'live')
+        "
+        (click)="view.emit($event)"
+      >
+        View Live Stream
+      </button>
+      <!-- <button mat-button>SHARE</button> -->
+    </mat-card-actions>
+  </mat-card>
+</ng-container>
+
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+</ng-template>

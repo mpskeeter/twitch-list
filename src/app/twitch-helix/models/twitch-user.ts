@@ -1,3 +1,9 @@
+import {
+  TwitchStream,
+  TwitchSubscriptionError,
+  TwitchSubscriptionSuccess
+} from './';
+
 export interface TwitchUser {
   id: string;
   login: string;
@@ -9,4 +15,6 @@ export interface TwitchUser {
   offline_image_url: string;
   view_count: number;
   email: string;
+  stream?: TwitchStream;
+  subscription?: TwitchSubscriptionError | TwitchSubscriptionSuccess;
 }

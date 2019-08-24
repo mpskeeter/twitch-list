@@ -1,9 +1,39 @@
-<ng-container *ngIf="streams else loading">
-  <twitch-helix-stream *ngFor="let stream of streams"
-                       [stream]="stream"></twitch-helix-stream>
+<ng-container *ngIf="users; else loading">
+  <section>
+    <mat-tab-group>
+      <mat-tab label="Online">
+        <div class="wrapper">
+          <!-- <div class="container"
+            fxLayout="row"
+            fxLayout.xs="column"
+            fxLayoutWrap
+            fxLayoutGap="0.5%"
+            fxLayoutAlign="center"> -->
+          <twitch-helix-stream-card
+            *ngFor="let user of isOnline(users, true)"
+            class="card-item"
+            [user]="user"
+            (view)="viewStream(user.display_name)"
+          ></twitch-helix-stream-card>
+          <!-- </div> -->
+        </div>
+      </mat-tab>
+      <mat-tab label="Offline">
+        <div class="wrapper">
+          <twitch-helix-stream-card
+            *ngFor="let user of isOnline(users, false)"
+            [user]="user"
+            (view)="viewStream(user.display_name)"
+          ></twitch-helix-stream-card>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </section>
+
+  <!-- <twitch-helix-stream *ngFor="let stream of streams"
+                       [stream]="stream"></twitch-helix-stream> -->
 </ng-container>
 
-
 <ng-template #loading>
-  Loading...
+  <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
 </ng-template>

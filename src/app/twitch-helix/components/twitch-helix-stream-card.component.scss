@@ -1,0 +1,125 @@
+:host {
+  display: grid;
+  // grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+  // grid-auto-rows: 450px;
+  // grid-auto-columns: 450px;
+  // grid-gap: 20px;
+
+  // // min-height: 100vh;
+  padding: 10px;
+  // background-color: darkgrey;
+
+  .mat-card {
+    min-width: 425px;
+    max-width: 425px;
+    background-color: #4b367c;
+    color: white;
+
+    .mat-card-subtitle {
+      color: white;
+    }
+
+    .mat-card-actions {
+      color: red;
+    }
+
+    .yellow-icon {
+      color: yellow;
+    }
+  }
+
+  .online {
+    box-shadow: forestgreen -6px -5px 5px !important;
+    // background-color: forestgreen;
+  }
+
+  .offline {
+    box-shadow: red -6px -5px 5px;
+    // background-color: red;
+  }
+}
+
+// :host {
+
+//   // grid-row: "auto auto auto";
+//   // width: 450;
+//   // min-width: 450px;
+//   // max-width: 450px;
+//   // border: 1px solid black;
+
+//   // display: flex;
+//   // flex-direction: row;
+//   // flex-wrap: wrap;
+//   // justify-content: flex-start;
+
+//   // padding: 32px;
+//   // border-radius: 8px;
+
+//   & > * {
+//     box-sizing: border-box;
+//   }
+
+//   & > *:not(:last-child) {
+//     margin-right: 32px;
+//   }
+
+//   mat-card {
+//     // flex: 0 1 calc(33.3% - 32px);
+
+//     width: 450;
+//     min-width: 450px;
+//     max-width: 450px;
+//       // box-shadow: #4b367c -6px -5px 5px;
+//     background-color: #4b367c;
+//     color:white;
+
+//     .mat-card-subtitle {
+//       color: white;
+//     }
+
+//     .mat-card-actions {
+//       color: red;
+//     }
+//   }
+
+//   // .channel_banner {
+//   //   display:flex;
+//   //   max-width: 600px;
+//   //   color:white;
+//   //   // background-color:rgba(0,0,0,0.8);
+//   //   background-color: #4b367c;
+//   //   border-radius: 5px;
+//   //   padding-bottom: 15px;
+//   //   justify-content: flex-start;
+
+//   //   margin: 40px auto;
+//   //   // background-color: rgba(20,20,20,0.6);
+//   //   max-width: 700px;
+//   //   box-shadow: rgba(255,255,255,0.4) -8px -6px 5px;
+//   //   background-repeat: no-repeat;
+//   //   background-size: cover;
+//   //   background-position: center;
+//   // }
+
+//   // .channel_logo{
+//   //   align-self: center;
+//   //   width: 80px;
+//   //   height: 80px;
+//   // }
+
+//   .online{
+//     box-shadow: forestgreen -6px -5px 5px !important;
+//     // background-color: forestgreen;
+//   }
+
+//   .offline{
+//     box-shadow: red -6px -5px 5px;
+//     // background-color: red;
+//   }
+
+//   .channel-name {
+//     color:white;
+//     margin-top: 20px;
+//     left: 5px;
+//   }
+// }
