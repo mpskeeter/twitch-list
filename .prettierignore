@@ -1,0 +1,16 @@
+/**/environments
+
+# compiled output
+/dist
+/tmp
+/out-tsc
+
+
+
+/*.json
+/commitlint.json
+/*.*rc
+/*.*ignore
+
+# dependencies
+/**/node_modules

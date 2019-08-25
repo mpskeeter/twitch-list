@@ -2,12 +2,22 @@
   .mat-card {
     background-color: #4b367c;
     color: white;
+
+    & .mat-card-subtitle {
+      color: white;
+    }
+
+    & .mat-card-content {
+      place-self: center;
+    }
   }
+
+
 
   .channel_banner {
     display: flex;
     max-width: 600px;
-    color: white;
+    // color: white;
     // background-color:rgba(0,0,0,0.8);
     background-color: #4b367c;
     border-radius: 5px;

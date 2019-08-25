@@ -3,12 +3,12 @@ import {
   ElementRef,
   ViewChild,
   Input,
-  AfterViewInit
+  AfterViewInit,
 } from '@angular/core';
 
 @Component({
   selector: 'script-hack',
-  templateUrl: './script-hack.component.html'
+  templateUrl: './script-hack.component.html',
 })
 export class ScriptHackComponent implements AfterViewInit {
   @ViewChild('script', { static: false }) script: ElementRef;

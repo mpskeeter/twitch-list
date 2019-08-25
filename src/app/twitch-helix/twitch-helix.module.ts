@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { MaterialModule } from '../material.module';
-import { TwitchComponents } from './components';
+import { Components } from './components';
 import { Services } from '../services';
 import { Pipes } from './pipes';
 import { TwitchHelixRoutingModule } from './twitch-helix-routing.module';
@@ -16,10 +16,10 @@ import { Directives } from './directives';
     HttpClientModule,
     BrowserModule,
     MaterialModule,
-    TwitchHelixRoutingModule
+    TwitchHelixRoutingModule,
   ],
   providers: [[...Services]],
-  declarations: [[...TwitchComponents], [...Pipes], [...Directives]],
-  exports: [[...TwitchComponents]]
+  declarations: [[...Components], [...Pipes], [...Directives]],
+  exports: [[...Components]],
 })
 export class TwitchHelixModule {}

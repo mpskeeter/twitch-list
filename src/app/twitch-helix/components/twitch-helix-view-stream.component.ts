@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
   // tslint:disable-next-line: component-selector
   selector: 'twitch-helix-view-stream',
   templateUrl: 'twitch-helix-view-stream.component.html',
-  styleUrls: ['./twitch-helix-view-stream.component.scss']
+  styleUrls: ['./twitch-helix-view-stream.component.scss'],
 })
 export class TwitchHelixViewStreamComponent implements OnInit, OnDestroy {
   streamName: string[] | string;
@@ -21,10 +21,13 @@ export class TwitchHelixViewStreamComponent implements OnInit, OnDestroy {
   users = new BehaviorSubject<TwitchUser[]>(null);
   users$ = this.users.asObservable();
 
+  width = 400;
+  height = 400;
+
   constructor(
     public service: TwitchHelixApiService,
     public router: Router,
-    public route: ActivatedRoute
+    public route: ActivatedRoute,
   ) {
     // this.scriptLoader.loadScript('twitch-embed');
   }
@@ -43,23 +46,23 @@ export class TwitchHelixViewStreamComponent implements OnInit, OnDestroy {
         // // followedStream
         await this.service.getStreams({
           param: 'user_login',
-          value: this.streamName
+          value: this.streamName,
         });
 
         combineLatest([this.service.users$, this.service.followedStream$])
           .pipe(
             map(([users, streams]) => {
               if (users && streams) {
-                return users.data.map(user => {
+                return users.data.map((user) => {
                   user.stream = streams.data.find(
-                    stream => stream.user_id === user.id
+                    (stream) => stream.user_id === user.id,
                   );
                   return user;
                 });
               }
-            })
+            }),
           )
-          .subscribe(users => this.users.next(users));
+          .subscribe((users) => this.users.next(users));
       } else {
         console.log('error');
       }

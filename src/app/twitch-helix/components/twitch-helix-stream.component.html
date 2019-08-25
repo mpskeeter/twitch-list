@@ -1,21 +1,29 @@
 <mat-card [ngClass]="online" gdAreas="header | content | footer">
   <mat-card-header gdArea="header">
-    <img
-      mat-card-avatar
-      *ngIf="user.profile_image_url"
-      src="{{ user.profile_image_url }}"
-    />
+    <img mat-card-avatar
+         *ngIf="user.profile_image_url"
+         src="{{ user.profile_image_url }}"/>
 
     <mat-card-title-group>
       <mat-card-title>{{ user.display_name }}</mat-card-title>
-      <mat-card-subtitle>{{
-        user.stream && user.stream.title
-      }}</mat-card-subtitle>
+      <mat-card-subtitle>{{ user.stream && user.stream.title }}</mat-card-subtitle>
     </mat-card-title-group>
   </mat-card-header>
-  <mat-card-content gdArea="content">
-    <div id="{{ user.stream.id }}"></div>
-
-    <script-hack>{{ loadVideo() }}</script-hack>
+  <mat-card-content gdArea="content" gdAlignColumns="center center" *ngIf="!collapsed">
+    <ng-container *ngIf="interactive && !collapsed">
+        <twitch-helix-video [id]="user.stream.id"
+                            [width]="width"
+                            [height]="height"
+                            [userName]="user.stream.user_name"></twitch-helix-video>
+      <!-- <div id="{{ user.stream.id }}" gdAlignColumns="center center"></div>
+      <script-hack>{{ loadInteractiveVideo() }}</script-hack> -->
+    </ng-container>
+    <ng-container *ngIf="!interactive">
+      <script-hack>{{ loadNonInteractiveVideo() }}</script-hack>
+    </ng-container>
   </mat-card-content>
+  <mat-card-actions>
+      <button mat-button [disabled]="collapsed" (click)="toggleCollapsed()">Collapse Video</button>
+      <button mat-button [disabled]="!collapsed" (click)="toggleCollapsed()">Uncollapse Video</button>
+   </mat-card-actions> 
 </mat-card>
