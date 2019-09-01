@@ -68,20 +68,23 @@ export class TwitchAuthService {
       return '';
     }
 
-    return (
-      '?' +
-      params
-        .map((param) => {
-          if (!param) {
-            return '';
-          } else if (typeof param.value === 'string') {
-            return `${param.param}=${param.value}`;
-          } else if (Array.isArray(param.value)) {
-            return param.value.map((value: string) => `${param.param}=${value}`).join('&');
-          }
-        })
-        .join('&')
-    );
+    let retValue = params
+      .map((param) => {
+        if (!param) {
+          return '';
+        } else if (typeof param.value === 'string') {
+          return `${param.param}=${param.value}`;
+        } else if (Array.isArray(param.value)) {
+          return param.value.map((value: string) => `${param.param}=${value}`).join('&');
+        }
+      })
+      .join('&');
+
+    if (retValue !== '') {
+      retValue = '?' + retValue;
+    }
+
+    return retValue;
   };
 
   buildUrl = (url: string, params: any[] = []) => {
@@ -208,7 +211,7 @@ export class TwitchAuthService {
       const url = this.buildUrl('/validate', []);
       this.initializeHeaders();
 
-      this.headers = this.headers.append('Authorization', `OAuth ${token}`);
+      this.headers = new HttpHeaders().set('Authorization', `OAuth ${token}`);
 
       this.http.get<ValidateReponse>(url, { headers: this.headers }).subscribe(
         (data: ValidateReponse) => {
