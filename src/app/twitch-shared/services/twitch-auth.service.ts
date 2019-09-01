@@ -153,6 +153,7 @@ export class TwitchAuthService {
             this.localStorage.setRefreshToken(data.refresh_token);
             this.localStorage.setExpiresIn(data.expires_in);
             this.localStorage.deleteOriginalState();
+            this.validateAccessToken();
             resolve(true);
           },
           (err) => {
