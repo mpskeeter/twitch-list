@@ -8,7 +8,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MaterialModule } from './material.module';
 import { TwitchSharedModule } from './twitch-shared/twitch-shared.module';
-// import { TwitchAuthModule } from './twitch-auth/twitch-auth.module';
 import { TwitchHelixModule } from './twitch-helix/twitch-helix.module';
 // import { TwitchKrakenModule } from './twitch-kraken/twitch-kraken.module';
 
@@ -21,7 +20,6 @@ import { TwitchHelixModule } from './twitch-helix/twitch-helix.module';
     HttpClientModule,
     MaterialModule,
     TwitchSharedModule,
-    // TwitchAuthModule,
     TwitchHelixModule,
     // TwitchKrakenModule,
 

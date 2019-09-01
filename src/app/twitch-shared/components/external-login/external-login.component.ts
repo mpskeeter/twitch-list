@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TwitchAuthService } from '../../../twitch-auth/services';
+import { TwitchAuthService } from '../../services';
 
 @Component({
   selector: 'app-external-login',

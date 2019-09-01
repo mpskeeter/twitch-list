@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { TwitchAuthService } from '../../../twitch-auth/services';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TwitchAuthService } from '../../services';
 
 @Component({
   selector: 'app-callback',

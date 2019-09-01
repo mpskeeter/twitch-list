@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { TwitchAuthService } from '../../../twitch-auth/services';
 import { Router } from '@angular/router';
-import { TwitchLocalStorageService } from '../../services';
+import { TwitchAuthService, TwitchLocalStorageService } from '../../services';
 
 @Component({
   selector: 'app-navbar',
