@@ -9,7 +9,6 @@ import { TwitchHelixUserClipsComponent } from './twitch-helix-user-clips.compone
 import { TwitchHelixVideoComponent } from './twitch-helix-video.component';
 import { TwitchHelixViewClipComponent } from './twitch-helix-view-clip.component';
 import { TwitchHelixViewStreamComponent } from './twitch-helix-view-stream.component';
-// import { TwitchHelixUsersFollowsComponent } from './twitch-helix-users-follows.component';
 
 export const Components = [
   ScriptHackComponent,
@@ -23,7 +22,6 @@ export const Components = [
   TwitchHelixVideoComponent,
   TwitchHelixViewClipComponent,
   TwitchHelixViewStreamComponent,
-  // TwitchHelixUsersFollowsComponent,
 ];
 
 export * from './script-hack.component';
@@ -37,4 +35,3 @@ export * from './twitch-helix-user-clips.component';
 export * from './twitch-helix-video.component';
 export * from './twitch-helix-view-clip.component';
 export * from './twitch-helix-view-stream.component';
-// export * from './twitch-helix-users-follows.component';
