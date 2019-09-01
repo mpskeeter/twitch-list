@@ -74,8 +74,11 @@ export class TwitchHelixApiService {
         break;
       case 'kraken':
         this.headers = this.headers.append('Accept', 'application/vnd.twitchtv.v5+json');
-        if (environment.authToken) {
-          this.headers = this.headers.append('Authorization', `OAuth ${environment.authToken}`);
+        // if (environment.authToken) {
+        //   this.headers = this.headers.append('Authorization', `OAuth ${environment.authToken}`);
+        // }
+        if (this.AccessToken) {
+          this.headers = this.headers.append('Authorization', `OAuth ${this.AccessToken}`);
         }
         this.headers = this.headers.append('dataType', 'jsonp');
         break;
@@ -179,7 +182,7 @@ export class TwitchHelixApiService {
   getSubscription = (channelId: string) => {
     this.initializeHeaders();
     const emptyError: TwitchSubscriptionError = { error: '', message: '', status: 0 };
-    const url = `/users/${environment.userId}/subscriptions/${channelId}`;
+    const url = `/users/${this.storage.getUserId()}/subscriptions/${channelId}`;
     const apiUrl = this.buildFullBaseUrl(url, 'kraken');
 
     this.http.get<TwitchSubscriptionError | TwitchSubscriptionSuccess>(apiUrl, { headers: this.headers }).subscribe(
@@ -195,14 +198,14 @@ export class TwitchHelixApiService {
   };
 
   getUsersFollowsInitial = () => {
-    const params = [{ param: 'from_id', value: environment.userId.toString() }, { param: 'first', value: '100' }];
+    const params = [{ param: 'from_id', value: this.storage.getUserId() }, { param: 'first', value: '100' }];
 
     this.getUsersFollows(params);
   };
 
   getUsersFollowsPaged = () => {
     const params: Parameters[] = [
-      { param: 'from_id', value: environment.userId.toString() },
+      { param: 'from_id', value: this.storage.getUserId() },
       { param: 'first', value: '20' },
       { param: 'after', value: this.getFollowsPagination() },
     ];

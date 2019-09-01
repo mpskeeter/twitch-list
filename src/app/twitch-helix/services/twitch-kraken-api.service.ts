@@ -34,13 +34,16 @@ export class TwitchKrakenApiService {
     this.headers = this.headers.append('Client-ID', environment.twitchClientId);
     switch (apiVersion) {
       case 'helix':
-        if (environment.accessToken) {
+        if (this.userAccessToken) {
           this.headers = this.headers.append('Authorization', `Bearer ${this.userAccessToken}`);
         }
         break;
       case 'kraken':
         this.headers = this.headers.append('Accept', 'application/vnd.twitchtv.v5+json');
-        if (environment.authToken) {
+        // if (environment.authToken) {
+        //   this.headers = this.headers.append('Authorization', `OAuth ${this.userAccessToken}`);
+        // }
+        if (this.userAccessToken) {
           this.headers = this.headers.append('Authorization', `OAuth ${this.userAccessToken}`);
         }
         break;
@@ -91,7 +94,7 @@ export class TwitchKrakenApiService {
   getSubscription = (channelId: string) => {
     this.initializeHeaders('kraken');
 
-    const url = `/users/${environment.userId}/subscriptions/${channelId}`;
+    const url = `/users/${this.storage.getUserId()}/subscriptions/${channelId}`;
     const apiUrl = this.buildFullBaseUrl(url);
     this.http
       .get<TwitchSubscriptionError | TwitchSubscriptionSuccess>(apiUrl, { headers: this.headers })

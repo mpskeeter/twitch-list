@@ -1,15 +1,6 @@
 <header>
   <div>
-    <!-- <button (click)="auth.login()">Login via API</button> -->
-    <!-- <button (click)="auth.login()" *ngIf="!auth.loggedIn">Log In</button> -->
-    <!-- <button (click)="auth.logout()" *ngIf="auth.loggedIn">Log Out</button> -->
-
     <button *ngIf="!(storage.isLoggedIn$ | async)" (click)="login()">Login</button>
     <button *ngIf="(storage.isLoggedIn$ | async)" (click)="logout()">Logout</button>
-    <!-- <a *ngIf="!storage.getAccessToken()" (click)="login()">Login via HREF</a> -->
-    <!-- <a *ngIf="storage.getAccessToken()" (click)="logout()">Logout via HREF</a> -->
   </div>
-
-  <!-- <a routerLink="/twitch" *ngIf="auth.loggedIn">Twitch-List</a>&nbsp;
-  <a routerLink="profile" *ngIf="auth.loggedIn">Profile</a> -->
 </header>
