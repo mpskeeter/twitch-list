@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/f4e265f7-06ea-44df-85f3-872d7e58f2d1/deploy-status)](https://app.netlify.com/sites/twitch-list/deploys)
+
 # TwitchList
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.1.
