@@ -9,7 +9,7 @@ import { TwitchLocalStorageService } from '../../twitch-shared/services';
   styleUrls: ['./twitch-helix-followed.component.scss'],
 })
 export class TwitchHelixFollowedComponent implements OnInit {
-  constructor(public service: TwitchHelixApiService, private storage: TwitchLocalStorageService) {}
+  constructor(public service: TwitchHelixApiService, public storage: TwitchLocalStorageService) {}
 
   async ngOnInit() {
     await this.service.getUsersFollowsInitial();

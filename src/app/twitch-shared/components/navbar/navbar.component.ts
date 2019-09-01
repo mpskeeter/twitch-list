@@ -9,7 +9,7 @@ import { TwitchAuthService, TwitchLocalStorageService } from '../../services';
   providers: [TwitchAuthService],
 })
 export class NavbarComponent implements OnInit {
-  constructor(private auth: TwitchAuthService, private router: Router, private storage: TwitchLocalStorageService) {}
+  constructor(public auth: TwitchAuthService, private router: Router, private storage: TwitchLocalStorageService) {}
   ngOnInit() {}
 
   login = () => {

@@ -9,7 +9,6 @@ import { AppComponent } from './app.component';
 import { MaterialModule } from './material.module';
 import { TwitchSharedModule } from './twitch-shared/twitch-shared.module';
 import { TwitchHelixModule } from './twitch-helix/twitch-helix.module';
-// import { TwitchKrakenModule } from './twitch-kraken/twitch-kraken.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,8 +20,6 @@ import { TwitchHelixModule } from './twitch-helix/twitch-helix.module';
     MaterialModule,
     TwitchSharedModule,
     TwitchHelixModule,
-    // TwitchKrakenModule,
-
     // Keep routing module loaded last
     AppRoutingModule,
   ],
