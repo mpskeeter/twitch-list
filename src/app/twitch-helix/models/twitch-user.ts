@@ -1,7 +1,8 @@
 import {
   TwitchStream,
   TwitchSubscriptionError,
-  TwitchSubscriptionSuccess
+  TwitchSubscriptionSuccess,
+  TwitchClip,
 } from './';
 
 export interface TwitchUser {
@@ -17,4 +18,5 @@ export interface TwitchUser {
   email: string;
   stream?: TwitchStream;
   subscription?: TwitchSubscriptionError | TwitchSubscriptionSuccess;
+  clips?: TwitchClip[] | null;
 }

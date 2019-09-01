@@ -1,23 +1,20 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Route } from '@angular/router';
-import { TwitchHelixModule } from './twitch-helix/twitch-helix.module';
-import { TwitchHelixFollowedComponent } from './twitch-helix/components';
+import { RouterModule, Routes } from '@angular/router';
 import { twitchRoutes } from './twitch-helix/twitch-helix-routing.module';
+import { AppComponent } from './app.component';
+import { ExternalLoginComponent, CallbackComponent } from './twitch-shared/components';
 
-const routes: Route[] = [
-  // { path: 'twitch', component: TwitchHelixFollowedComponent },
-  // { path: 'twitch', component: TwitchHelixModule },
-  {
-    path: 'twitch',
-    // component: TwitchHelixFollowedComponent,
-    children: twitchRoutes
-  },
-  { path: '', redirectTo: 'twitch', pathMatch: 'full' },
-  { path: '**', redirectTo: 'twitch', pathMatch: 'full' }
+const routes: Routes = [
+  { path: 'callback', component: CallbackComponent },
+  { path: 'externalLogin', component: ExternalLoginComponent },
+  { path: 'home', component: AppComponent },
+  { path: 'twitch', children: twitchRoutes },
+  { path: '', component: AppComponent, pathMatch: 'full' },
+  { path: '**', redirectTo: 'twitch', pathMatch: 'full' },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AppRoutingModule {}

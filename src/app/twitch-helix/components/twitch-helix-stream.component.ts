@@ -1,16 +1,5 @@
-import {
-  Component,
-  Input,
-  ViewChild,
-  AfterViewInit,
-  ElementRef,
-} from '@angular/core';
-import { TwitchUser } from '../models';
-import { TwitchHelixVideoComponent } from './twitch-helix-video.component';
-// import { DynamicScriptLoaderService } from '../services';
-
-// declare const Twitch: any;
-// import 'twitch-embed';
+import { Component, Input, OnInit } from '@angular/core';
+import { TwitchUser, TwitchClip, TwitchClips } from '../models';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -18,44 +7,71 @@ import { TwitchHelixVideoComponent } from './twitch-helix-video.component';
   templateUrl: 'twitch-helix-stream.component.html',
   styleUrls: ['twitch-helix-stream.component.scss'],
 })
-export class TwitchHelixStreamComponent {
-  // @ViewChild('video', {static: true, read: ElementRef}) video: ElementRef;
+export class TwitchHelixStreamComponent implements OnInit {
+  @Input() input: TwitchUser | TwitchClip;
+  @Input() height = 400;
+  @Input() width = 400;
 
-  @Input() user: TwitchUser;
-  @Input() height: number;
-  @Input() width: number;
+  user: TwitchUser;
+  clip: TwitchClip;
+  videoType: string;
+  videoName: string;
 
   collapsed = false;
-
   interactive = true;
 
   toggleCollapsed = () => (this.collapsed = !this.collapsed);
 
-  // constructor(
-  //   public scriptLoader: DynamicScriptLoaderService,
-  // ) {
-  //   this.scriptLoader.loadScript('twitch-embed');
-  // }
+  ngOnInit() {
+    const user: TwitchUser = this.input as TwitchUser;
+    const clip: TwitchClip = this.input as TwitchClip;
 
-  // ngAfterViewInit() {
-  //   console.log('nativeElement: ', this.video.nativeElement);
-  //   // this.video.nativeElement = `
-  //   // <div id="${ this.user.stream.id }" gdAlignColumns="center center"></div>
-  //   // <script-hack>${ this.loadInteractiveVideo() }</script-hack>
-  //   // `;
-  // }
+    console.log('clip: ', clip);
+
+    switch (true) {
+      case user.login !== undefined:
+        this.user = user;
+        this.videoType = 'channel';
+        this.videoName = user.stream.user_name;
+        break;
+
+      case clip.url !== undefined:
+        this.clip = clip;
+        this.videoType = 'video';
+        this.videoName = clip.id;
+        break;
+    }
+  }
 
   loadInteractiveVideo = () => {
-    const script = `
-    const options_${this.user.stream.id} = {
-    width: ${this.width},
-    height: ${this.height},
-    channel: "${this.user.stream.user_name}"
-  };
-  var player_${this.user.stream.id} = new Twitch.Player("${this.user.stream.id}", options_${this.user.stream.id});
-  player_${this.user.stream.id}.setVolume(0.5);
+    let script: string;
+    let id: string;
+    let type: string;
+    switch (true) {
+      case this.user.login !== undefined:
+        // const user: TwitchUser = this.input as TwitchUser;
+        id = this.user.stream.id;
+        type = `  channel: "${this.user.stream.user_name}"`;
+        break;
+
+      case this.clip.url !== undefined:
+        // const clip: TwitchClip = this.input as TwitchClip;
+        id = this.clip.id;
+        type = `  video: "${this.clip.id}"`;
+        break;
+    }
+
+    script = `
+const options_${id} = {
+  width: ${this.width},
+  height: ${this.height},
+${type}
+};
+var player_${id} = new Twitch.Player("${id}", options_${id});
+player_${id}.setVolume(0.5);
     `;
 
+    console.log('script: ', script);
     return script;
   };
 

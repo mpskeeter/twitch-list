@@ -1,0 +1,17 @@
+<ng-container *ngIf="users$ | async as users else loading">
+  <ng-container *ngFor="let user of users">
+    <twitch-helix-stream-card [user]="user"
+                              [enableViewClips]="false"
+                              (viewClips)="viewClips(user.login)"></twitch-helix-stream-card>
+
+    <div class="wrapper">
+      <twitch-helix-user-clip-card *ngFor="let clip of user.clips"
+                                   [user]="user"
+                                   [clip]="clip"></twitch-helix-user-clip-card>
+    </div>
+  </ng-container>
+</ng-container>
+
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+</ng-template>

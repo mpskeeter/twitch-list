@@ -1,10 +1,12 @@
-<ng-container *ngIf="service.follows$ | async as following; else loading">
-  <!-- <pre>{{following | json}}</pre> -->
-  <twitch-helix-followed-stream
-    [following]="following.data"
-  ></twitch-helix-followed-stream>
-</ng-container>
+<ng-container *ngIf="(storage.isLoggedIn$ | async)">
+  <ng-container *ngIf="service.follows$ | async as following; else loading">
+    <!-- <pre>{{following | json}}</pre> -->
+    <twitch-helix-followed-stream
+      [following]="following.data"
+    ></twitch-helix-followed-stream>
+  </ng-container>
 
-<ng-template #loading>
-  <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
-</ng-template>
+  <ng-template #loading>
+    <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+  </ng-template>
+</ng-container>

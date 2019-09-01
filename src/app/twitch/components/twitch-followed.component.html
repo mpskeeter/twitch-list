@@ -1,8 +1,0 @@
-<!-- <ng-container *ngIf="service.follows$ | async as follows else loading"> -->
-<ng-container *ngIf="service.follows$ | async as follows else loading">
-  <twitch-followed-stream [follows]="follows"></twitch-followed-stream>
-</ng-container>
-
-<ng-template #loading>
-  Loading...
-</ng-template>

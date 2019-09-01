@@ -4,12 +4,16 @@ import { RouterModule, Route } from '@angular/router';
 import {
   TwitchHelixFollowedComponent,
   TwitchHelixFollowedStreamComponent,
-  TwitchHelixViewStreamComponent
+  TwitchHelixUserClipsComponent,
+  TwitchHelixViewClipComponent,
+  TwitchHelixViewStreamComponent,
 } from './components';
 
 export const twitchRoutes: Route[] = [
   { path: '', component: TwitchHelixFollowedComponent },
-  { path: 'viewstream/:id', component: TwitchHelixViewStreamComponent }
+  { path: 'viewstream/:id', component: TwitchHelixViewStreamComponent },
+  { path: 'viewclips/:id', component: TwitchHelixUserClipsComponent },
+  { path: 'viewclip/:id', component: TwitchHelixViewClipComponent },
 ];
 
 // export const twitchRoutes: Route[] = [
@@ -25,6 +29,6 @@ export const twitchRoutes: Route[] = [
 
 @NgModule({
   imports: [RouterModule.forChild(twitchRoutes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class TwitchHelixRoutingModule {}

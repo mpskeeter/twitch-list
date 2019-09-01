@@ -3,16 +3,26 @@
     background-color: #4b367c;
     color: white;
 
-    & .mat-card-subtitle {
-      color: white;
+    .mat-card-header {
+      .mat-card-title-group {
+        color: white;
+    
+        .mat-card-title {
+          color: white;
+        }
+    
+        .mat-card-subtitle {
+          color: white;
+          font-size: 10px;
+        }
+      }
     }
+
 
     & .mat-card-content {
       place-self: center;
     }
   }
-
-
 
   .channel_banner {
     display: flex;

@@ -1,0 +1,41 @@
+.mat-card {
+  background-color: #4b367c;
+  color: white;
+  min-height: 150px;
+
+  display:flex;
+  flex-direction: column;
+
+  .mat-card-header {
+    color: white;
+    min-height: 80px;
+
+    .mat-card-title-group {
+      color: white !important;
+
+      .mat-card-title {
+        color: white;
+      }
+  
+      .mat-card-subtitle {
+        color: white;
+        font-size: 10px;
+      }
+    }
+  }
+
+  .mat-card-content {
+    display: flex;
+    flex-grow: 1;
+    overflow: auto;    
+  }
+
+  .mat-card-actions {
+    margin-top: auto;
+    color: red;
+  }
+
+  .yellow-icon {
+    color: yellow;
+  }
+}

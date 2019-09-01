@@ -1,9 +1,10 @@
 <ng-container *ngIf="users$ | async as users; else loading">
   <!-- {{followedStream | json}} -->
   <div class="wrapper">
+      <!-- [user]="user" -->
     <twitch-helix-stream
       *ngFor="let user of users"
-      [user]="user"
+      [input]="user"
       [width]="width"
       [height]="height"
     ></twitch-helix-stream>

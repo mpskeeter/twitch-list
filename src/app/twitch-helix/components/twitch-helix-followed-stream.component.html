@@ -9,12 +9,12 @@
             fxLayoutWrap
             fxLayoutGap="0.5%"
             fxLayoutAlign="center"> -->
+            <!-- class="card-item" -->
           <twitch-helix-stream-card
             *ngFor="let user of isOnline(users, true)"
-            class="card-item"
             [user]="user"
-            (view)="viewStream(user.display_name)"
-          ></twitch-helix-stream-card>
+            (viewStream)="viewStream(user.display_name)"
+            (viewClips)="viewClips(user.id)"></twitch-helix-stream-card>
           <!-- </div> -->
         </div>
       </mat-tab>
@@ -23,15 +23,13 @@
           <twitch-helix-stream-card
             *ngFor="let user of isOnline(users, false)"
             [user]="user"
-            (view)="viewStream(user.display_name)"
-          ></twitch-helix-stream-card>
+            (viewStream)="viewStream(user.display_name)"
+            (viewClips)="viewClips(user.id)"></twitch-helix-stream-card>
         </div>
       </mat-tab>
     </mat-tab-group>
   </section>
 
-  <!-- <twitch-helix-stream *ngFor="let stream of streams"
-                       [stream]="stream"></twitch-helix-stream> -->
 </ng-container>
 
 <ng-template #loading>

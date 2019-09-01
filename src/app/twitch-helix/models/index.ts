@@ -1,5 +1,7 @@
 export * from './twitch-app-token';
 export * from './twitch-channel';
+export * from './twitch-clip';
+export * from './twitch-clips';
 export * from './twitch-pagination';
 export * from './twitch-stream';
 export * from './twitch-streams';

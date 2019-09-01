@@ -9,7 +9,7 @@ import { combineLatest } from 'rxjs';
   // tslint:disable-next-line: component-selector
   selector: 'twitch-helix-followed-stream',
   templateUrl: 'twitch-helix-followed-stream.component.html',
-  styleUrls: ['twitch-helix-followed-stream.component.scss']
+  styleUrls: ['twitch-helix-followed-stream.component.scss'],
 })
 export class TwitchHelixFollowedStreamComponent implements OnInit {
   @Input() following: TwitchUsersFollowsData[];
@@ -20,44 +20,33 @@ export class TwitchHelixFollowedStreamComponent implements OnInit {
   constructor(public service: TwitchHelixApiService, public router: Router) {}
 
   async ngOnInit() {
-    const userIds: string[] = this.following.map(
-      (followed: TwitchUsersFollowsData) => followed.to_id
-    );
+    // const userIds: string[] = this.following.map(
+    //   (followed: TwitchUsersFollowsData) => followed.to_id,
+    // );
+    const userNames: string[] = this.following.map((followed: TwitchUsersFollowsData) => followed.to_name);
 
     // users
-    await this.service.getUsers({ param: 'id', value: userIds });
+    // await this.service.getUsers({ param: 'id', value: userIds });
+    await this.service.getUsers({ param: 'login', value: userNames });
     // followedStream
-    await this.service.getStreams({ param: 'user_id', value: userIds });
+    // await this.service.getStreams({ param: 'user_id', value: userIds });
+    await this.service.getStreams({ param: 'user_login', value: userNames });
 
     combineLatest([this.service.users$, this.service.followedStream$])
       .pipe(
         map(([users, streams]) => {
           if (users && streams) {
-            return users.data.map(user => {
-              user.stream = streams.data.find(
-                stream => stream.user_id === user.id
-              );
+            return users.data.map((user) => {
+              user.stream = streams.data.find((stream) => stream.user_id === user.id);
               return user;
             });
           }
-        })
+        }),
       )
-      .subscribe(users => (this.users = users));
+      .subscribe((users) => (this.users = users));
   }
 
   isOnline = (users: TwitchUser[], online: boolean) => {
-    return users.filter(
-      (user: TwitchUser) =>
-        (online && user.stream) || (!online && user.stream === undefined)
-    );
-  }
-
-  // isOnline = (streams: TwitchStream[] , online: boolean) => {
-  //   return streams.filter((stream: TwitchStream) => stream.type === (online ? 'live' : ''));
-  // }
-
-  viewStream = (userName: string) => {
-    // console.log('userName: ', userName);
-    this.router.navigate(['/twitch', 'viewstream', userName]);
-  }
+    return users.filter((user: TwitchUser) => (online && user.stream) || (!online && user.stream === undefined));
+  };
 }

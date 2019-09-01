@@ -1,0 +1,44 @@
+<!-- ============================================================== -->
+<!-- Main wrapper - style you can find in pages.scss -->
+<!-- ============================================================== -->
+<div class="main-container"> 
+    <!-- ============================================================== -->
+    <!-- Topbar - style you can find in header.scss -->
+    <!-- ============================================================== -->
+    <mat-toolbar color="primary" class="topbar telative">
+        <!-- ============================================================== -->
+        <!-- sidebar toggle -->
+        <!-- ============================================================== -->
+        
+        <!-- <button mat-icon-button (click)="snav.toggle()" value="sidebarclosed">
+            <mat-icon>menu</mat-icon>
+        </button> -->
+        <!-- ============================================================== -->
+        <!-- Logo - style you can find in header.scss -->
+        <!-- ============================================================== -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="index.html">
+                <!-- Logo icon -->
+                <!-- <logo></logo> -->
+                <!--End Logo icon -->
+                <!-- Logo text -->
+                <span fxShow="false" fxShow.gt-xs>
+                    <!-- dark Logo text -->
+                    <!-- <img src="assets/images/logo-text.png" alt="homepage" class="dark-logo"> -->
+                    <div style="font-size: 12px" class="dark-logo">Twitch List</div>
+                    <!-- Light Logo text -->    
+                    <!-- <img src="assets/images/logo-light-text.png" alt="homepage" class="light-logo"> -->
+                    <div style="font-size: 12px" class="light-logo">Twitch List</div>
+                </span>
+            </a>
+        </div>
+        <span fxFlex></span>
+        <app-navbar></app-navbar>
+    </mat-toolbar>
+                 
+    <div class="page-content">
+        
+            <router-outlet></router-outlet>
+        
+    </div>    
+</div>
