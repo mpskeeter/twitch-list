@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { environment } from '../../../environments/environment';
 import { TwitchLocalStorageService } from './twitch-local-storage.service';
+import { switchMap, tap } from 'rxjs/operators';
 
 interface Parameters {
   param: string;
@@ -139,20 +140,39 @@ export class TwitchAuthService {
 
         console.log('body: ', body);
 
-        this.http.post<BearerResponse>(url, body).subscribe(
-          (data: BearerResponse) => {
-            this.localStorage.setAccessToken(data.access_token);
-            this.localStorage.setRefreshToken(data.refresh_token);
-            this.localStorage.setExpiresIn(data.expires_in);
-            this.localStorage.deleteOriginalState();
-            this.validateAccessToken();
-            resolve(true);
-          },
-          (err) => {
-            console.log('acquireAccessToken: error: ', err);
-            resolve(false);
-          },
-        );
+        // this.http.post<BearerResponse>(url, body).subscribe(
+        //   async (data: BearerResponse) => {
+        //     this.localStorage.setAccessToken(data.access_token);
+        //     this.localStorage.setRefreshToken(data.refresh_token);
+        //     this.localStorage.setExpiresIn(data.expires_in);
+        //     this.localStorage.deleteOriginalState();
+        //     await this.validateAccessToken();
+        //     resolve(true);
+        //   },
+        //   (err) => {
+        //     console.log('acquireAccessToken: error: ', err);
+        //     resolve(false);
+        //   },
+        // );
+
+        this.http
+          .post<BearerResponse>(url, body)
+          .pipe(
+            tap((data: BearerResponse) => {
+              this.localStorage.setAccessToken(data.access_token);
+              this.localStorage.setRefreshToken(data.refresh_token);
+              this.localStorage.setExpiresIn(data.expires_in);
+              this.localStorage.deleteOriginalState();
+            }),
+            switchMap(() => this.validateAccessToken()),
+          )
+          .subscribe(
+            (data) => resolve(data),
+            (err) => {
+              console.log('acquireAccessToken: error: ', err);
+              resolve(false);
+            },
+          );
       } else {
         resolve(false);
       }
@@ -200,17 +220,17 @@ export class TwitchAuthService {
       const url = this.buildUrl('/validate', []);
       this.initializeHeaders();
 
-      this.headers = new HttpHeaders().set('Authorization', `OAuth ${token}`);
-
-      this.http.get<ValidateReponse>(url, { headers: this.headers }).subscribe(
-        (data: ValidateReponse) => {
-          this.localStorage.setUserId(data.user_id);
-          resolve(true);
-        },
-        (err) => {
-          console.log('validateAccessToken: error: ', err);
-          resolve(false);
-        },
-      );
+      this.http
+        .get<ValidateReponse>(url, { headers: new HttpHeaders().set('Authorization', `OAuth ${token}`) })
+        .subscribe(
+          (data: ValidateReponse) => {
+            this.localStorage.setUserId(data.user_id);
+            resolve(true);
+          },
+          (err) => {
+            console.log('validateAccessToken: error: ', err);
+            resolve(false);
+          },
+        );
     });
 }

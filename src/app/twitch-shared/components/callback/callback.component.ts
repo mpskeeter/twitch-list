@@ -11,11 +11,11 @@ export class CallbackComponent implements OnInit {
   constructor(private auth: TwitchAuthService, private activatedRoute: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
-    this.activatedRoute.queryParams.subscribe((params) => {
+    this.activatedRoute.queryParams.subscribe(async (params) => {
       const token = params.code;
       const state = params.state;
-      this.auth.acquireAccessToken(state, token);
-      this.router.navigateByUrl('/twitch');
+      await this.auth.acquireAccessToken(state, token);
+      await this.router.navigateByUrl('/twitch');
     });
   }
 }
