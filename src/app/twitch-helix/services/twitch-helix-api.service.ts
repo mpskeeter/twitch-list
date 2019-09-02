@@ -124,19 +124,6 @@ export class TwitchHelixApiService {
     return pagePagination;
   };
 
-  getUser = () => {
-    const url = '/users';
-    const params = [
-      { param: 'login', value: ['mpskeeter', 'mrbrandotv'] },
-      { param: 'scope', value: 'user:read:email' },
-    ];
-    const apiUrl = this.buildUrl(url, params);
-
-    this.http
-      .get<any>(apiUrl, { headers: this.headers })
-      .subscribe((data) => this.users.next(data.data), (err) => console.log('getUser: error: ', err));
-  };
-
   getStreams = (params: Parameters | Parameters[]) => {
     const url = '/streams';
 

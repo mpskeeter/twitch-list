@@ -95,7 +95,7 @@ export class TwitchAuthService {
     return `${this.baseUrl}${url}${urlParams}`;
   };
 
-  authorizeUrl = (responseType: string = 'code'): string => {
+  loginUrl = (responseType: string = 'code'): string => {
     let state = this.localStorage.getOriginalState();
 
     if (!state) {
@@ -112,17 +112,6 @@ export class TwitchAuthService {
     ];
 
     return this.buildUrl('/authorize', params);
-  };
-
-  login = () => {
-    this.initializeHeaders();
-
-    this.http
-      .get<any>(this.authorizeUrl('token'), { headers: this.headers })
-      .subscribe(
-        (data: any) => console.log('acquireAppToken: data: ', data),
-        (err) => console.log('acquireAppToken: error: ', err),
-      );
   };
 
   acquireAccessToken = (state: string, token: string): Promise<boolean> =>

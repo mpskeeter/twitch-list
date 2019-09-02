@@ -1,27 +1,19 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, CanActivate } from '@angular/router';
 import { Observable } from 'rxjs';
-// import { tap } from 'rxjs/operators';
-// import { AuthService } from './auth.service';
+import { TwitchLocalStorageService } from '../services';
+import { tap } from 'rxjs/internal/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  // constructor(private auth: AuthService) {}
-  constructor() {}
+  constructor(private storage: TwitchLocalStorageService) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
   ): Observable<boolean> | Promise<boolean | UrlTree> | boolean {
-    return true;
-    // return this.auth.isAuthenticated$.pipe(
-    //   tap((loggedIn) => {
-    //     if (!loggedIn) {
-    //       this.auth.login(state.url);
-    //     }
-    //   }),
-    // );
+    return this.storage.isLoggedIn$.pipe(tap((isLoggedIn: boolean) => isLoggedIn));
   }
 }

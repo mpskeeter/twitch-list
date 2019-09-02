@@ -10,6 +10,6 @@ export class ExternalLoginComponent implements OnInit {
   constructor(private auth: TwitchAuthService) {}
 
   ngOnInit() {
-    window.location.href = this.auth.authorizeUrl();
+    window.location.href = this.auth.loginUrl();
   }
 }
