@@ -3,68 +3,35 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 
 import { TwitchSubscriptionError, TwitchSubscriptionSuccess, TwitchClips } from '../models';
-
-import { environment } from '../../../environments/environment';
-import { TwitchLocalStorageService } from 'src/app/twitch-shared/services';
-
-interface Parameters {
-  param: string;
-  value: string[] | string;
-}
+import { TwitchLocalStorageService, TwitchBaseService, Parameter } from '../../twitch-shared/services';
 
 @Injectable()
-export class TwitchKrakenApiService {
+export class TwitchKrakenApiService extends TwitchBaseService {
   private subscribed = new BehaviorSubject<TwitchSubscriptionError | TwitchSubscriptionSuccess>(null);
   subscribed$ = this.subscribed.asObservable();
 
   private clips = new BehaviorSubject<TwitchClips>(null);
   clips$ = this.clips.asObservable();
 
-  userAccessToken: string = this.storage.getAccessToken();
-
   private baseUrl = 'https://api.twitch.tv/';
-  private headers: HttpHeaders;
 
-  constructor(private http: HttpClient, private storage: TwitchLocalStorageService) {
+  constructor(
+    public http: HttpClient,
+    public storage: TwitchLocalStorageService
+  ) {
+    super(http, storage);
     this.initializeHeaders();
   }
 
   initializeHeaders = (apiVersion: string = 'kraken') => {
-    this.headers = new HttpHeaders().set('Content-Type', 'application/json');
-    this.headers = this.headers.append('Client-ID', environment.twitchClientId);
-    switch (apiVersion) {
-      case 'helix':
-        if (this.userAccessToken) {
-          this.headers = this.headers.append('Authorization', `Bearer ${this.userAccessToken}`);
-        }
-        break;
-      case 'kraken':
-        this.headers = this.headers.append('Accept', 'application/vnd.twitchtv.v5+json');
-        // if (environment.authToken) {
-        //   this.headers = this.headers.append('Authorization', `OAuth ${this.userAccessToken}`);
-        // }
-        if (this.userAccessToken) {
-          this.headers = this.headers.append('Authorization', `OAuth ${this.userAccessToken}`);
-        }
-        break;
+    super.initializeHeaders();
+    if (apiVersion === 'helix') {
+      this.headers = this.headers.delete('Accept');
+      this.headers = this.headers.delete('dataType');
     }
-  };
-
-  BuildAPIParams = (params: any[]): string => {
-    return (
-      '?' +
-      params
-        .map((param) => {
-          if (!param) {
-            return '';
-          } else if (typeof param.value === 'string') {
-            return `${param.param}=${param.value}`;
-          } else if (Array.isArray(param.value)) {
-            return param.value.map((value) => `${param.param}=${value}`).join('&');
-          }
-        })
-        .join('&')
-    );
+    if (this.AccessToken) {
+      this.headers = this.headers.append('Authorization', `${apiVersion === 'helix' ? 'Bearer' : 'OAuth'} ${this.AccessToken}`);
+    }
   };
 
   buildFullBaseUrl = (url: string, apiVersion: string = 'kraken') => {
@@ -76,7 +43,7 @@ export class TwitchKrakenApiService {
     return `${this.buildFullBaseUrl(url, apiVersion)}${this.BuildAPIParams(params)}`;
   };
 
-  getClips = (params: Parameters | Parameters[]) => {
+  getClips = (params: Parameter | Parameter[]) => {
     this.initializeHeaders();
     const url = '/clips';
 

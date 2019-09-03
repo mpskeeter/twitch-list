@@ -2,13 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { switchMap, tap } from 'rxjs/operators';
 
-import { environment } from '../../../environments/environment';
 import { TwitchLocalStorageService } from './twitch-local-storage.service';
+import { TwitchBaseService, Parameter } from './twitch-base.service';
 
-interface Parameters {
-  param: string;
-  value: string[] | string;
-}
+import { environment } from '../../../environments/environment';
 
 interface BearerResponse {
   access_token: string;
@@ -40,10 +37,8 @@ interface ValidateReponse {
 @Injectable({
   providedIn: 'root',
 })
-export class TwitchAuthService {
+export class TwitchAuthService extends TwitchBaseService {
   private baseUrl = 'https://id.twitch.tv/oauth2';
-
-  private headers: HttpHeaders;
 
   private state: string =
     Math.random()
@@ -53,40 +48,9 @@ export class TwitchAuthService {
       .toString(36)
       .substring(2, 15);
 
-  constructor(private http: HttpClient, private localStorage: TwitchLocalStorageService) {}
-
-  initializeHeaders = () => {
-    this.headers = new HttpHeaders().set('Content-Type', 'application/json');
-    this.headers = this.headers.append('Client-ID', environment.twitchClientId);
-    this.headers = this.headers.append('Accept', 'application/vnd.twitchtv.v5+json');
-    this.headers = this.headers.append('dataType', 'jsonp');
-  };
-
-  BuildAPIParams = (params: any[]): string => {
-    console.log('BuildAPIParams: params: ', params);
-
-    if (params === ([] || '')) {
-      return '';
-    }
-
-    let retValue = params
-      .map((param) => {
-        if (!param) {
-          return '';
-        } else if (typeof param.value === 'string') {
-          return `${param.param}=${param.value}`;
-        } else if (Array.isArray(param.value)) {
-          return param.value.map((value: string) => `${param.param}=${value}`).join('&');
-        }
-      })
-      .join('&');
-
-    if (retValue !== '') {
-      retValue = '?' + retValue;
-    }
-
-    return retValue;
-  };
+  constructor(public http: HttpClient, public storage: TwitchLocalStorageService) {
+    super(http, storage);
+  }
 
   buildUrl = (url: string, params: any[] = []) => {
     let urlParams = '';
@@ -97,14 +61,14 @@ export class TwitchAuthService {
   };
 
   loginUrl = (responseType: string = 'code'): string => {
-    let state = this.localStorage.getOriginalState();
+    let state = this.storage.getOriginalState();
 
     if (!state) {
       state = this.state;
-      this.localStorage.setOriginalState(state);
+      this.storage.setOriginalState(state);
     }
 
-    const params = [
+    const params: Parameter[] = [
       { param: 'client_id', value: environment.twitchClientId },
       { param: 'redirect_uri', value: environment.redirectUrl + '/callback' },
       { param: 'response_type', value: responseType },
@@ -117,7 +81,7 @@ export class TwitchAuthService {
 
   acquireAccessToken = (state: string, token: string): Promise<boolean> =>
     new Promise((resolve) => {
-      const originalState = this.localStorage.getOriginalState();
+      const originalState = this.storage.getOriginalState();
 
       if (state === originalState) {
         const params = [
@@ -142,10 +106,11 @@ export class TwitchAuthService {
           .post<BearerResponse>(url, body)
           .pipe(
             tap((data: BearerResponse) => {
-              this.localStorage.setAccessToken(data.access_token);
-              this.localStorage.setRefreshToken(data.refresh_token);
-              this.localStorage.setExpiresIn(data.expires_in);
-              this.localStorage.deleteOriginalState();
+              this.storage.setAccessToken(data.access_token);
+              this.storage.setRefreshToken(data.refresh_token);
+              this.storage.setExpiresIn(data.expires_in);
+              this.storage.setAcquireTime();
+              this.storage.deleteOriginalState();
             }),
             switchMap(() => this.validateAccessToken()),
           )
@@ -163,7 +128,7 @@ export class TwitchAuthService {
 
   refreshAccessToken = (): Promise<boolean> =>
     new Promise((resolve) => {
-      const refreshToken = this.localStorage.getRefreshToken();
+      const refreshToken = this.storage.getRefreshToken();
 
       const params = [
         { param: 'grant_type', value: 'refresh_token' },
@@ -181,14 +146,14 @@ export class TwitchAuthService {
         client_secret: environment.twitchClientSecret,
       };
 
-      console.log('body: ', body);
-
       this.http
         .post<RefreshResponse | RefreshError>(url, body)
         .pipe(
           tap((data: RefreshResponse) => {
-            this.localStorage.setAccessToken(data.access_token);
-            this.localStorage.setRefreshToken(data.refresh_token);
+            this.storage.setAccessToken(data.access_token);
+            this.storage.setRefreshToken(data.refresh_token);
+            this.storage.setAcquireTime();
+            this.storage.deleteExpiresIn();
           }),
         )
         .subscribe(
@@ -202,13 +167,13 @@ export class TwitchAuthService {
 
   validateAccessToken = (): Promise<boolean> =>
     new Promise((resolve) => {
-      const token = this.localStorage.getAccessToken();
+      const token = this.storage.getAccessToken();
 
       const url = this.buildUrl('/validate', []);
 
       this.http
         .get<ValidateReponse>(url, { headers: new HttpHeaders().set('Authorization', `OAuth ${token}`) })
-        .pipe(tap((data: ValidateReponse) => this.localStorage.setUserId(data.user_id)))
+        .pipe(tap((data: ValidateReponse) => this.storage.setUserId(data.user_id)))
         .subscribe(
           () => resolve(true),
           (err) => {
