@@ -1,6 +1,5 @@
 // import * as $ from 'jquery';
 import { Component } from '@angular/core';
-import { MenuItems } from '../../services';
 
 /** @title Responsive sidenav */
 @Component({
@@ -9,6 +8,4 @@ import { MenuItems } from '../../services';
   templateUrl: 'full.component.html',
   styleUrls: ['full.component.scss'],
 })
-export class FullComponent {
-  constructor(public menuItems: MenuItems) {}
-}
+export class FullComponent {}

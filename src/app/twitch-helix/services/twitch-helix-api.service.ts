@@ -13,19 +13,15 @@ import {
   TwitchClips,
 } from '../models';
 
-import { environment } from '../../../environments/environment';
 import { TwitchLocalStorageService } from '../../twitch-shared/services';
-import { TwitchAuthService } from '../../twitch-shared/services';
+import { TwitchBaseService, TwitchAuthService, Parameter } from '../../twitch-shared/services';
 
-interface Parameters {
-  param: string;
-  value: string[] | string;
-}
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
-export class TwitchHelixApiService {
+export class TwitchHelixApiService extends TwitchBaseService {
   private appToken = new BehaviorSubject<TwitchAppToken>(null);
   appToken$ = this.appToken.asObservable();
 
@@ -45,11 +41,13 @@ export class TwitchHelixApiService {
   clips$ = this.clips.asObservable();
 
   private baseUrl = 'https://api.twitch.tv/';
-  private headers: HttpHeaders;
 
-  private AccessToken: string = this.storage.getAccessToken();
-
-  constructor(private http: HttpClient, private storage: TwitchLocalStorageService, private auth: TwitchAuthService) {
+  constructor(
+    public http: HttpClient,
+    public storage: TwitchLocalStorageService,
+    private auth: TwitchAuthService
+  ) {
+    super(http, storage);
     this.initializeHeaders();
   }
 
@@ -64,42 +62,14 @@ export class TwitchHelixApiService {
   };
 
   initializeHeaders = (apiVersion: string = 'helix') => {
-    this.headers = new HttpHeaders().set('Content-Type', 'application/json');
-    this.headers = this.headers.append('Client-ID', environment.twitchClientId);
-    switch (apiVersion) {
-      case 'helix':
-        if (this.AccessToken) {
-          this.headers = this.headers.append('Authorization', `Bearer ${this.AccessToken}`);
-        }
-        break;
-      case 'kraken':
-        this.headers = this.headers.append('Accept', 'application/vnd.twitchtv.v5+json');
-        // if (environment.authToken) {
-        //   this.headers = this.headers.append('Authorization', `OAuth ${environment.authToken}`);
-        // }
-        if (this.AccessToken) {
-          this.headers = this.headers.append('Authorization', `OAuth ${this.AccessToken}`);
-        }
-        this.headers = this.headers.append('dataType', 'jsonp');
-        break;
+    super.initializeHeaders();
+    if (apiVersion === 'helix') {
+      this.headers = this.headers.delete('Accept');
+      this.headers = this.headers.delete('dataType');
     }
-  };
-
-  BuildAPIParams = (params: any[]): string => {
-    return (
-      '?' +
-      params
-        .map((param) => {
-          if (!param) {
-            return '';
-          } else if (typeof param.value === 'string') {
-            return `${param.param}=${param.value}`;
-          } else if (Array.isArray(param.value)) {
-            return param.value.map((value) => `${param.param}=${value}`).join('&');
-          }
-        })
-        .join('&')
-    );
+    if (this.AccessToken) {
+      this.headers = this.headers.append('Authorization', `${apiVersion === 'helix' ? 'Bearer' : 'OAuth'} ${this.AccessToken}`);
+    }
   };
 
   buildFullBaseUrl = (url: string, apiVersion: string = 'helix') => {
@@ -107,7 +77,7 @@ export class TwitchHelixApiService {
     return `${this.baseUrl}${apiVersion}${url}`;
   };
 
-  buildUrl = (url: string, params: any[] = [], apiVersion: string = 'helix') => {
+  buildUrl = (url: string, params: any[] | null = [], apiVersion: string = 'helix') => {
     return `${this.buildFullBaseUrl(url, apiVersion)}${this.BuildAPIParams(params)}`;
   };
 
@@ -124,7 +94,7 @@ export class TwitchHelixApiService {
     return pagePagination;
   };
 
-  getStreams = (params: Parameters | Parameters[]) => {
+  getStreams = (params: Parameter | Parameter[]) => {
     const url = '/streams';
 
     if (!Array.isArray(params)) {
@@ -138,7 +108,7 @@ export class TwitchHelixApiService {
       .subscribe((data: TwitchStreams) => this.followedStream.next(data), (err) => this.checkError(err));
   };
 
-  getUsers = (params: Parameters | Parameters[]) => {
+  getUsers = (params: Parameter | Parameter[] | null) => {
     const url = '/users';
 
     if (!Array.isArray(params)) {
@@ -151,7 +121,7 @@ export class TwitchHelixApiService {
       .subscribe((data: TwitchUsers) => this.users.next(data), (err) => this.checkError(err));
   };
 
-  getClips = (params: Parameters | Parameters[]) => {
+  getClips = (params: Parameter | Parameter[]) => {
     this.initializeHeaders();
     const url = '/clips';
 
@@ -168,7 +138,6 @@ export class TwitchHelixApiService {
 
   getSubscription = (channelId: string) => {
     this.initializeHeaders();
-    const emptyError: TwitchSubscriptionError = { error: '', message: '', status: 0 };
     const url = `/users/${this.storage.getUserId()}/subscriptions/${channelId}`;
     const apiUrl = this.buildFullBaseUrl(url, 'kraken');
 
@@ -191,7 +160,7 @@ export class TwitchHelixApiService {
   };
 
   getUsersFollowsPaged = () => {
-    const params: Parameters[] = [
+    const params: Parameter[] = [
       { param: 'from_id', value: this.storage.getUserId() },
       { param: 'first', value: '20' },
       { param: 'after', value: this.getFollowsPagination() },
@@ -200,7 +169,7 @@ export class TwitchHelixApiService {
     this.getUsersFollows(params);
   };
 
-  getUsersFollows = (params: Parameters[]) => {
+  getUsersFollows = (params: Parameter[]) => {
     const url = '/users/follows';
     const apiUrl = this.buildUrl(url, params);
     this.http

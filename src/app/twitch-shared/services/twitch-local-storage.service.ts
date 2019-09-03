@@ -29,6 +29,7 @@ export class TwitchLocalStorageService {
   originalStateKey = 'original-state';
   refreshTokenKey = 'user-refresh-token';
   expiresInKey = 'user-expires-in';
+  acquireTimeKey = 'user-acquire-time';
   userIdKey = 'user-user-id';
 
   constructor(private storage: LocalStorageService) {
@@ -94,6 +95,18 @@ export class TwitchLocalStorageService {
 
   setExpiresIn = (time: number) => {
     this.storage.set(this.expiresInKey, time.toString());
+  };
+
+  deleteExpiresIn = (): void => {
+    this.storage.remove(this.expiresInKey);
+  };
+
+  getAcquireTime = (): number => {
+    return parseInt(this.storage.get(this.acquireTimeKey), 10);
+  };
+
+  setAcquireTime = (time: number = new Date().getTime() / 1000) => {
+    this.storage.set(this.acquireTimeKey, time.toString());
   };
 
   getUserId = (): string => {
