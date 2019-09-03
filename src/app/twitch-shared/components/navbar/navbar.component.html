@@ -1,6 +1,11 @@
 <header>
-  <div>
-    <button *ngIf="!(storage.isLoggedIn$ | async)" (click)="login()">Login</button>
-    <button *ngIf="(storage.isLoggedIn$ | async)" (click)="logout()">Logout</button>
-  </div>
+  <section>
+    <div>
+      <button *ngIf="!(storage.isLoggedIn$ | async)" (click)="login()">Login</button>
+      <button *ngIf="(storage.isLoggedIn$ | async)" (click)="logout()">Logout</button>
+    </div>
+    <img mat-card-avatar
+         *ngIf="auth.user$ | async as user"
+         src="{{ user.profile_image_url | replace:'300x300':'28x28' }}"/>
+  </section>
 </header>

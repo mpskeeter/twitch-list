@@ -7,7 +7,6 @@ import { MaterialModule } from '../material.module';
 import { TwitchSharedModule } from '../twitch-shared/twitch-shared.module';
 import { Components } from './components';
 import { Services } from './services';
-import { Pipes } from './pipes';
 import { TwitchHelixRoutingModule } from './twitch-helix-routing.module';
 import { Directives } from './directives';
 
@@ -21,7 +20,7 @@ import { Directives } from './directives';
     TwitchHelixRoutingModule,
   ],
   providers: [[...Services]],
-  declarations: [[...Components], [...Pipes], [...Directives]],
+  declarations: [[...Components], [...Directives]],
   exports: [[...Components]],
 })
 export class TwitchHelixModule {}

@@ -5,10 +5,11 @@ import { NgxLocalStorageModule } from 'ngx-localstorage';
 import { Services } from './services';
 import { Guards } from './guards';
 import { Components } from './components';
+import { Pipes } from './pipes';
 import { MaterialModule } from '../material.module';
 
 @NgModule({
-  declarations: [[...Components]],
+  declarations: [[...Components], [...Pipes]],
   imports: [CommonModule, RouterModule, MaterialModule, NgxLocalStorageModule.forRoot()],
   exports: [[...Components]],
   providers: [[...Services], [...Guards]],

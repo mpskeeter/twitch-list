@@ -6,7 +6,7 @@ import { TwitchLocalStorageService } from './twitch-local-storage.service';
 import { TwitchUser, TwitchUsers } from '../../twitch-helix/models';
 
 import { environment } from '../../../environments/environment';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 export interface Parameter {
   param: string;
@@ -16,7 +16,7 @@ export interface Parameter {
 @Injectable()
 export class TwitchBaseService {
   private user = new BehaviorSubject<TwitchUser>(null);
-  user$ = this.user.asObservable();
+  public user$ = this.user.asObservable();
 
   protected headers: HttpHeaders;
   protected AccessToken: string;
@@ -33,7 +33,7 @@ export class TwitchBaseService {
     this.headers = this.headers.append('Client-ID', environment.twitchClientId);
     this.headers = this.headers.append('Accept', 'application/vnd.twitchtv.v5+json');
     this.headers = this.headers.append('dataType', 'jsonp');
-  };
+  }
 
   BuildAPIParams = (params: Parameter[]): string => {
     let retValue = params
@@ -60,12 +60,17 @@ export class TwitchBaseService {
     if (accessToken) {
       const url = 'https://api.twitch.tv/helix/users';
 
+      this.initializeHeaders();
+      this.headers = this.headers.delete('dataType');
       this.headers = this.headers.delete('Accept');
       this.headers = this.headers.append('Authorization', `Bearer ${accessToken}`);
+
+      console.log('headers: ', this.headers);
 
       this.http
         .get<TwitchUsers>(url, { headers: this.headers })
         .pipe(
+          tap((users: TwitchUsers) => console.log(users)),
           map((users: TwitchUsers) => users.data[0]),
         )
         .subscribe(
