@@ -28,7 +28,7 @@ export class TwitchBaseService {
     this.AccessToken = this.storage.getAccessToken();
   }
 
-  initializeHeaders = () => {
+  protected initializeHeaders() {
     this.headers = new HttpHeaders().set('Content-Type', 'application/json');
     this.headers = this.headers.append('Client-ID', environment.twitchClientId);
     this.headers = this.headers.append('Accept', 'application/vnd.twitchtv.v5+json');
