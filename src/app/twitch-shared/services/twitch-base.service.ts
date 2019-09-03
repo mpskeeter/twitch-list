@@ -15,7 +15,7 @@ export interface Parameter {
 
 @Injectable()
 export class TwitchBaseService {
-  private user = new BehaviorSubject<TwitchUser>(null);
+  protected user = new BehaviorSubject<TwitchUser>(null);
   public user$ = this.user.asObservable();
 
   protected headers: HttpHeaders;

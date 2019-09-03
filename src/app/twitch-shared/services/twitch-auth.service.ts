@@ -79,6 +79,11 @@ export class TwitchAuthService extends TwitchBaseService {
     return this.buildUrl('/authorize', params);
   };
 
+  logout = () => {
+    this.user.next(null);
+    this.storage.logout();
+  }
+
   acquireAccessToken = (state: string, token: string): Promise<boolean> =>
     new Promise((resolve) => {
       const originalState = this.storage.getOriginalState();
