@@ -54,5 +54,13 @@
     "use-lifecycle-interface": true,
     "use-pipe-transform-interface": true
   },
-  "rulesDirectory": ["codelyzer"]
+  "rulesDirectory": ["codelyzer"],
+  "linterOptions": {
+    "exclude": [
+      "dist/lambda/*",
+      "functions/**/*.ts",
+      "scripts/**/*",
+      "config/*"
+    ]
+  }
 }

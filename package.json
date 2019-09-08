@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "prod": "node ./scripts/create-env.js && npm lambda:build && npm build --prod",
+    "lambda:build": "netlify-lambda build functions --config ./config/webpack.functions.js",
+    "lambda:serve": "netlify-lambda serve functions --config ./config/webpack.functions.js",
     "start": "ng serve --port 4200 --proxy-config proxy.conf.json",
     "prettier": "prettier --fix",
     "build": "ng build",
@@ -26,7 +29,11 @@
     "@fortawesome/angular-fontawesome": "^0.5.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.22",
     "@fortawesome/free-solid-svg-icons": "^5.10.2",
+    "babel-loader": "^8.0.6",
     "dotenv": "^8.1.0",
+    "fast-crc32c": "^1.0.4",
+    "firebase": "^6.6.0",
+    "firebase-admin": "^8.5.0",
     "hammerjs": "^2.0.8",
     "material-design-icons": "^3.0.1",
     "ngx-localstorage": "^2.4.0",
@@ -41,6 +48,13 @@
     "@angular/cli": "^8.3.3",
     "@angular/compiler-cli": "~8.2.5",
     "@angular/language-service": "~8.2.5",
+    "@babel/core": "^7.6.0",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-export-default-from": "^7.5.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
+    "@babel/plugin-transform-object-assign": "^7.2.0",
+    "@babel/preset-env": "^7.6.0",
+    "@babel/preset-typescript": "^7.6.0",
     "@commitlint/cli": "^8.1.0",
     "@commitlint/config-conventional": "^8.1.0",
     "@fortawesome/fontawesome-free": "^5.10.2",
@@ -64,6 +78,7 @@
     "stylelint-scss": "^3.9.4",
     "ts-node": "~8.3.0",
     "tslint": "^5.19.0",
-    "typescript": "~3.5.3"
+    "typescript": "~3.5.3",
+    "webpack-node-externals": "^1.7.2"
   }
 }
