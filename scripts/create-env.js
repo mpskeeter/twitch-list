@@ -26,6 +26,8 @@ const firebaseSettings = `
 }
 `;
 
+console.log('twitch settings: ', twitchSettings);
+
 fs.writeFileSync('./src/environments/environment.prod.ts', twitchSettings);
 
 fs.writeFileSync('./functions/libs/twitch-settings.json', twitchSettings);
