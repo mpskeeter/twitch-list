@@ -8,6 +8,7 @@ export const environment = {
   twitchClientSecret: '${process.env.twitchClientSecret}',
   twitchClientId: '${process.env.twitchClientId}',
   redirectUrl: '${process.env.redirectUrl}',
+  apiUrl: '${process.env.redirectUrl}/.netlify/functions',
 };
 `;
 
@@ -17,6 +18,7 @@ export const environment = {
   twitchClientSecret: '${process.env.twitchClientSecret}',
   twitchClientId: '${process.env.twitchClientId}',
   redirectUrl: '${process.env.redirectUrl}',
+  apiUrl: '${process.env.redirectUrl}/.netlify/functions',
 };
 `;
 
