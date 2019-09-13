@@ -3,11 +3,13 @@
 /**/environments
 .env
 /**/*settings.json
+/functions/libs/*-settings.ts
 
 # compiled output
 /dist
 /tmp
 /out-tsc
+/lambda
 
 # Only exists if Bazel was run
 /bazel-out
