@@ -1,3 +1,3 @@
 [build]
-  functions = "dist/lambda"
-  command = "npm run prod"
+  functions = "lambda"
+  command = "node ./scripts/create-env.js && npm run lambda:build && npm run build --prod"

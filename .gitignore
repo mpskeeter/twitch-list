@@ -1,9 +1,11 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
-/**/environments
+#/**/environments/*.ts
 .env
-/**/*settings.json
-/functions/libs/*-settings.ts
+/**/*settings.*
+# /**/*settings.json
+# /functions/libs/firebase-settings.json
+# /functions/libs/twitch-settings.ts
 
 # compiled output
 /dist

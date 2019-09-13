@@ -72,7 +72,7 @@ export class TwitchAuthService extends TwitchBaseService {
       { param: 'client_id', value: environment.twitchClientId },
       { param: 'redirect_uri', value: environment.redirectUrl + '/callback' },
       { param: 'response_type', value: responseType },
-      { param: 'scope', value: 'user_read user:read:email clips:edit chat:read chat:edit' },
+      { param: 'scope', value: 'user_read user_subscriptions user:read:email clips:edit chat:read chat:edit' },
       { param: 'state', value: state },
     ];
 
