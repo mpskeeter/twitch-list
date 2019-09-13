@@ -4,13 +4,15 @@ import { RouterModule, Route } from '@angular/router';
 import {
   TwitchHelixFollowedComponent,
   TwitchHelixFollowedStreamComponent,
+  TwitchListComponent,
   TwitchHelixUserClipsComponent,
   TwitchHelixViewClipComponent,
   TwitchHelixViewStreamComponent,
 } from './components';
 
 export const twitchRoutes: Route[] = [
-  { path: '', component: TwitchHelixFollowedComponent },
+  // { path: '', component: TwitchHelixFollowedComponent },
+  { path: '', component: TwitchListComponent },
   { path: 'viewstream/:id', component: TwitchHelixViewStreamComponent },
   { path: 'viewclips/:id', component: TwitchHelixUserClipsComponent },
   { path: 'viewclip/:id', component: TwitchHelixViewClipComponent },

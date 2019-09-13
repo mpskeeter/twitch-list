@@ -82,6 +82,23 @@ export class TwitchHelixApiService extends TwitchBaseService {
     return `${this.buildFullBaseUrl(url, apiVersion)}${this.BuildAPIParams(params)}`;
   };
 
+  getChannels = () => {
+    const apiUrl = environment.apiUrl + '/twitch-get-following';
+
+    this.headers = new HttpHeaders().set('Accept', 'application/json');
+    this.headers = this.headers.append('Content-Type', 'application/json');
+    this.headers = this.headers.append('Authorization', `OAuth ${this.AccessToken}`);
+    this.headers = this.headers.append('Client-ID', environment.twitchClientId);
+    this.headers = this.headers.append('userId', this.storage.getUserId());
+
+    this.http
+      .get<TwitchUsers>(apiUrl, { headers: this.headers })
+      .subscribe(
+        (data: TwitchUsers) => this.users.next(data),
+        (err) => this.checkError(err)
+      );
+  }
+
   getFollowsPagination = () => {
     let pagePagination: string;
 
