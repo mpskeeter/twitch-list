@@ -57,7 +57,8 @@
   "rulesDirectory": ["codelyzer"],
   "linterOptions": {
     "exclude": [
-      "dist/lambda/*",
+      "dist/*",
+      "lambda/*",
       "functions/**/*.ts",
       "scripts/**/*",
       "config/*"
