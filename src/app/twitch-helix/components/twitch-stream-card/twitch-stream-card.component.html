@@ -1,36 +1,33 @@
-<ng-container *ngIf="serviceKraken.subscribed$ | async as subscribed">
-  <!-- <pre>{{subscribed | json}}</pre> -->
-  <twitch-card [ngClass]="user.stream && user.stream.type === 'live' ? 'online' : 'offline'">
+<twitch-card [ngClass]="user.stream && user.stream.type === 'live' ? 'online' : 'offline'">
 
-    <ng-container card-header>
-        <img
-        mat-card-avatar
-        *ngIf="user.profile_image_url"
-        src="{{ user.profile_image_url }}"/>
-      <mat-card-title-group>
-        <mat-card-title>
-          <!-- {{user.display_name}} ({{user.id}}) -->
-          {{ user.display_name }}
-          <i class="material-icons yellow-icon" *ngIf="isSubscribed()">star</i>
-        </mat-card-title>
-        <mat-card-subtitle>{{user.stream && user.stream.title}}</mat-card-subtitle>
-      </mat-card-title-group>
-    </ng-container>
+  <ng-container card-header>
+      <img
+      mat-card-avatar
+      *ngIf="user.profile_image_url"
+      src="{{ user.profile_image_url }}"/>
+    <mat-card-title-group>
+      <mat-card-title>
+        <!-- {{user.display_name}} ({{user.id}}) -->
+        {{ user.display_name }}
+        <i class="material-icons yellow-icon" *ngIf="isSubscribed()">star</i>
+      </mat-card-title>
+      <mat-card-subtitle>{{user.stream && user.stream.title}}</mat-card-subtitle>
+    </mat-card-title-group>
+  </ng-container>
 
-    <ng-container card-footer>
-      <button
-        mat-button
-        [disabled]="!user.stream || (user.stream && user.stream.type !== 'live')"
-        (click)="viewStream(user.login)">
-        View Live Stream
-      </button>
-      <button
-        mat-button
-        [disabled]="!user.clips || (user.clips && user.clips.length === 0) || !enableViewClips"
-        (click)="viewClips(user.id)">
-        View Clips
-      </button>
-    </ng-container>
-    
-  </twitch-card>
-</ng-container>
+  <ng-container card-footer>
+    <button
+      mat-button
+      [disabled]="!user.stream || (user.stream && user.stream.type !== 'live')"
+      (click)="viewStream(user.login)">
+      View Live Stream
+    </button>
+    <button
+      mat-button
+      [disabled]="!user.clips || (user.clips && user.clips.length === 0) || !enableViewClips"
+      (click)="viewClips(user.id)">
+      View Clips
+    </button>
+  </ng-container>
+  
+</twitch-card>
