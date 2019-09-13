@@ -1,0 +1,30 @@
+:host {
+  display: grid;
+  padding: 10px;
+
+  .mat-card-title-group {
+    color: white;
+    padding: 3px;
+
+    .mat-card-title {
+      color: white;
+    }
+
+    .mat-card-subtitle {
+      color: white;
+      font-size: 10px;
+    }
+  }
+
+  .online {
+    box-shadow: forestgreen -6px -5px 5px !important;
+  }
+
+  .offline {
+    box-shadow: red -6px -5px 5px;
+  }
+
+  .yellow-icon {
+    color: yellow;
+  }
+}
