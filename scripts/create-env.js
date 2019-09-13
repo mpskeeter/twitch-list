@@ -11,6 +11,15 @@ export const environment = {
 };
 `;
 
+const twitchSettingsDev = `
+export const environment = {
+  production: false,
+  twitchClientSecret: '${process.env.twitchClientSecret}',
+  twitchClientId: '${process.env.twitchClientId}',
+  redirectUrl: '${process.env.redirectUrl}',
+};
+`;
+
 const firebaseSettings = `
 {
   "type": "service_account",
@@ -29,7 +38,7 @@ const firebaseSettings = `
 console.log('twitch settings: ', twitchSettings);
 
 fs.writeFileSync('./src/environments/environment.prod.ts', twitchSettings);
+fs.writeFileSync('./src/environments/environment.ts', twitchSettingsDev);
 
 fs.writeFileSync('./functions/libs/twitch-settings.json', twitchSettings);
-
 fs.writeFileSync('./functions/libs/firebase-settings.json', firebaseSettings);
