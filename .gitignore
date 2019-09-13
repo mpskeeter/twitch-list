@@ -2,7 +2,8 @@
 
 #/**/environments/*.ts
 .env
-/**/*settings.*
+/functions/**/*settings.*
+/functions-in-progress
 # /**/*settings.json
 # /functions/libs/firebase-settings.json
 # /functions/libs/twitch-settings.ts

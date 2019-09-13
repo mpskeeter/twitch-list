@@ -1,8 +1,6 @@
 import fetch from 'node-fetch';
-import Firebase from './firebase';
-
+// import Firebase from './firebase';
 import { TwitchUsersFollows, TwitchStream, TwitchStreams, TwitchUsers, TwitchUser, TwitchClips, TwitchSubscriptionError, TwitchSubscriptionSuccess, TwitchClip } from 'src/app/twitch-helix/models';
-// import { CallbackInterface, ErrorResponse, SuccessResponse } from './http-responses';
 
 require('dotenv').config();
 
@@ -19,8 +17,7 @@ export default class Twitch {
   private baseUrl = 'https://api.twitch.tv/';
   incomingHeaders: any;
   protected headers: any;
-  protected db = new Firebase()
-
+  // protected db = new Firebase()
   constructor(incomingHeaders: any) {
     this.incomingHeaders = incomingHeaders;
   }

@@ -59,7 +59,8 @@
     "exclude": [
       "dist/*",
       "lambda/*",
-      "functions/**/*.ts",
+      "functions/**/*",
+      "functions-in-progress/**/*",
       "scripts/**/*",
       "config/*"
     ]
