@@ -2,8 +2,7 @@ import fetch from 'node-fetch';
 import Firebase from './firebase';
 
 import { TwitchUsersFollows, TwitchStream, TwitchStreams, TwitchUsers, TwitchUser, TwitchClips, TwitchSubscriptionError, TwitchSubscriptionSuccess, TwitchClip } from 'src/app/twitch-helix/models';
-import { CallbackInterface, ErrorResponse, SuccessResponse } from './http-responses';
-import { TwitchHelixFollowedStreamComponent } from 'src/app/twitch-helix/components';
+// import { CallbackInterface, ErrorResponse, SuccessResponse } from './http-responses';
 
 require('dotenv').config();
 
@@ -16,8 +15,6 @@ interface ClipsArray {
   [key: string]: TwitchClips;
 }
 
-
-
 export default class Twitch {
   private baseUrl = 'https://api.twitch.tv/';
   incomingHeaders: any;
@@ -29,7 +26,8 @@ export default class Twitch {
   }
 
   initializeHeaders = (apiVersion: string = 'helix') => {
-    let authType: string = "Bearer";
+    const authType: string = (apiVersion === 'helix' ? 'Bearer' : 'OAuth');
+    const authorization: string = this.incomingHeaders["authorization"].replace('Bearer ', '').replace('OAuth ','');
     this.headers = {
       "Content-Type": "application/json",
       "Client-ID": this.incomingHeaders["client-id"],
@@ -38,10 +36,10 @@ export default class Twitch {
     if (apiVersion !== 'helix') {
       this.headers["Accept"] = "application/vnd.twitchtv.v5+json";
       this.headers["dataType"] = "jsonp";
-      authType = "OAuth"
     }
 
-    this.headers["Authorization"] = authType + ' ' + this.incomingHeaders["authorization"].replace('Bearer ', '');
+    this.headers["Authorization"] = authType + ' ' + authorization;
+    // console.log('headers: ', this.headers);
   };
 
   BuildParams = (params: Parameter[]): string => {
@@ -221,13 +219,10 @@ export default class Twitch {
     const API_ENDPOINT = this.baseUrl + 'kraken/users/' + user + '/subscriptions/' + channel_id;
     this.initializeHeaders('kraken');
 
-    console.log('headers: ', this.headers);
-
     const response: TwitchSubscriptionSuccess | TwitchSubscriptionError = await this.fetch(API_ENDPOINT, this.headers);
 
     const success: TwitchSubscriptionSuccess = response as TwitchSubscriptionSuccess;
     if (success.channel !== undefined) {
-      console.log('subscription: success: ', success);
       return success;
     }
     
@@ -235,10 +230,6 @@ export default class Twitch {
     if (error.status) {
       return error;
     }
-    // const 
-    //   .then((subscription: TwitchSubscriptionSuccess | TwitchSubscriptionError) => subscription)
-    //   .then(subscription => subscription)
-    // ;
   }
 
   // getUserList = async (params: Parameter | Parameter[] | null) => {

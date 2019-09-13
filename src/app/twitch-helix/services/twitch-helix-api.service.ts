@@ -57,7 +57,8 @@ export class TwitchHelixApiService extends TwitchBaseService {
       const params = this.checkError.caller.arguments;
       this.checkError.caller(params);
     } else {
-      console.log(`${this.checkError.caller}: error: `, error);
+      // console.log(`${this.checkError.caller}: error: `, error);
+      console.log('error: ', error);
     }
   };
 
